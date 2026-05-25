@@ -1,0 +1,17 @@
+# Raw FinalSpark CSV — too large for git, regenerate from preprocess.py
+src/data/raw/
+*.csv
+*.csv.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/

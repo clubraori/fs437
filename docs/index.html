@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fs437* — five days of a living mind</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Space+Mono&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: hsl(0 0% 97%);
+  --bg-soft: hsl(0 0% 94%);
+  --fg: hsl(220 20% 8%);
+  --fg-soft: hsl(220 20% 8% / 0.55);
+  --fg-faint: hsl(220 20% 8% / 0.08);
+  --teal: hsl(160 20% 35%);
+  --teal-soft: hsl(160 20% 35% / 0.55);
+  --teal-faint: hsl(160 20% 35% / 0.15);
+  --teal-bg: hsl(160 20% 35% / 0.08);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Host Grotesk', sans-serif;
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+}
+
+body { overflow: hidden; }
+body.mode-read { overflow: auto; }
+
+/* ═══════════ START SCREEN ═══════════ */
+#start-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  border-bottom: 1px solid #0a0f14;
+  transition: transform 1.0s cubic-bezier(0.7, 0.0, 0.3, 1.0);
+}
+#start-screen.lifted { transform: translateY(-100%); }
+
+#start-inner {
+  text-align: center;
+  padding: 48px 64px;
+  position: relative;
+}
+
+#start-frost {
+  position: absolute; inset: -40%; z-index: -1;
+  background: radial-gradient(ellipse at center, hsla(0 0% 97% / 0.55) 0%, hsla(0 0% 97% / 0.3) 30%, hsla(0 0% 97% / 0) 55%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+#start-inner h1 {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: clamp(144px, 18vw, 260px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  text-transform: lowercase;
+  line-height: 1.0;
+  margin-bottom: 36px;
+}
+
+#start-inner h1 a {
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+#start-inner h1 a:hover { color: hsl(160 30% 45%); }
+
+#start-inner .start-desc {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: clamp(24px, 3.2vw, 42px);
+  font-weight: 300;
+  color: hsla(220, 20%, 8%, 0.5);
+  margin: 0 auto 36px;
+}
+
+#start-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsla(220, 20%, 8%, 0.45);
+  margin-top: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+#start-hint .arrow {
+  display: block;
+  margin-top: 8px;
+  font-size: 16px;
+  animation: scroll-bounce 2.2s ease-in-out infinite;
+}
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.35; }
+  50%      { transform: translateY(6px); opacity: 0.75; }
+}
+
+#start-footer {
+  position: absolute;
+  bottom: 40px; left: 0; right: 0;
+  text-align: center;
+}
+#start-footer .credit {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 14px; font-weight: 300;
+  color: hsla(220, 20%, 8%, 0.3);
+  letter-spacing: 0.04em;
+}
+#start-footer .credit a { color: inherit; text-decoration: none; }
+#start-footer .credit a:hover { color: var(--teal); }
+
+/* ═══════════ TOGGLE PILL ═══════════ */
+#toggle-pill {
+  position: fixed;
+  top: 28px; right: 32px;
+  z-index: 60;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: hsla(220, 20%, 8%, 0.5);
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#toggle-pill.visible { opacity: 1; }
+#toggle-pill span {
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: color 0.2s, border-bottom-color 0.2s;
+  border-bottom: 1px solid transparent;
+}
+#toggle-pill .dot { cursor: default; padding: 0 4px; color: hsla(220, 20%, 8%, 0.25); }
+#toggle-pill .active {
+  color: var(--fg);
+  border-bottom-color: var(--fg);
+  font-weight: 500;
+}
+#toggle-pill span:not(.active):not(.dot):hover { color: hsla(220, 20%, 8%, 0.85); }
+#toggle-pill #t-read.pulse {
+  animation: read-pulse 1.4s ease-in-out 2;
+}
+@keyframes read-pulse {
+  0%, 100% { color: hsla(220, 20%, 8%, 0.5); border-bottom-color: transparent; }
+  50%      { color: var(--teal); border-bottom-color: var(--teal); }
+}
+
+/* ═══════════ ROOM ═══════════ */
+#room {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 10;
+  transition: opacity 0.6s ease;
+}
+body.mode-read #room {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#three-canvas { display: block; width: 100%; height: 100%; }
+
+/* HUD top-left */
+#hud {
+  position: fixed; top: 28px; left: 32px;
+  z-index: 20; pointer-events: none;
+  font-family: 'Host Grotesk', sans-serif;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#hud.visible { opacity: 1; }
+#hud .hud-title {
+  font-size: 14px; font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsla(220, 20%, 8%, 0.85);
+  line-height: 1.5;
+}
+#hud .hud-meta {
+  margin-top: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 0.04em;
+  color: hsla(220, 20%, 8%, 0.6);
+  line-height: 1.7;
+}
+#hud .hud-divider {
+  margin: 12px 0 8px;
+  width: 40px;
+  border-top: 1px solid hsla(220, 20%, 8%, 0.15);
+}
+#hud .hud-time, #hud .hud-rate {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 0.04em;
+  color: hsla(220, 20%, 8%, 0.7);
+  line-height: 1.8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* View toggle bottom-left */
+#view-toggle {
+  position: fixed;
+  bottom: 100px; left: 32px;
+  z-index: 20;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 0.06em;
+  display: flex; gap: 8px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#view-toggle.visible { opacity: 1; }
+.vt-btn {
+  background: transparent;
+  border: 1px solid hsla(220, 20%, 8%, 0.15);
+  color: hsla(220, 20%, 8%, 0.55);
+  font-family: inherit; font-size: inherit; letter-spacing: inherit;
+  padding: 5px 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.vt-btn:hover { border-color: var(--teal); color: var(--teal); }
+.vt-btn.active {
+  background: var(--teal-bg);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+/* Transport bottom-center */
+#transport {
+  position: fixed;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex; align-items: center; gap: 18px;
+  padding: 12px 20px;
+  background: hsla(0, 0%, 97%, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid hsla(220, 20%, 8%, 0.08);
+  border-radius: 2px;
+  max-width: 90vw; width: 700px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#transport.visible { opacity: 1; }
+#transport button {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 13px; font-weight: 400;
+  letter-spacing: 0.04em;
+  background: transparent;
+  color: var(--teal);
+  border: 1px solid hsla(160, 20%, 35%, 0.25);
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+#transport button:hover { border-color: var(--teal); background: hsla(160, 20%, 35%, 0.06); }
+#transport button.sound-on {
+  background: var(--teal);
+  color: var(--bg);
+  border-color: var(--teal);
+}
+#transport .t-time {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: hsla(220, 20%, 8%, 0.6);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+#transport .t-progress {
+  flex: 1;
+  height: 2px;
+  background: hsla(220, 20%, 8%, 0.1);
+  position: relative;
+  cursor: pointer;
+  min-width: 100px;
+}
+#transport .t-progress-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  background: var(--teal);
+  width: 0%;
+  transition: width 0.05s linear;
+}
+#transport #room-speed {
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Loading indicator */
+#loading {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: hsla(220, 20%, 8%, 0.6);
+  z-index: 25;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+#loading.done { opacity: 0; }
+
+/* End-of-playback replay button */
+#end-replay {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 14px; letter-spacing: 0.08em;
+  color: var(--teal);
+  cursor: pointer;
+  padding: 8px 16px;
+  border-bottom: 1px solid hsla(160, 20%, 35%, 0.25);
+  z-index: 21;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+#end-replay.visible { opacity: 1; pointer-events: auto; }
+#end-replay:hover { border-bottom-color: var(--teal); }
+
+/* ═══════════ EXPLAINER ═══════════ */
+#explainer {
+  position: relative;
+  background: var(--bg);
+  z-index: 5;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s;
+  min-height: 100vh;
+}
+body.mode-read #explainer { opacity: 1; visibility: visible; }
+
+/* Existing explainer styles — all scoped under #explainer */
+#explainer .wrap { max-width: 720px; margin: 0 auto; padding: 0 28px; }
+#explainer .full { width: 100%; }
+
+/* Hero — exists for spacing but hero stats are dropped */
+#explainer .hero { padding: 100px 0 40px; }
+#explainer .hero .eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+#explainer .hero h1 {
+  font-size: 58px; font-weight: 300;
+  letter-spacing: -0.015em; line-height: 1.05;
+  margin-bottom: 24px;
+}
+#explainer .hero h1 em { font-style: normal; color: var(--teal); }
+#explainer .hero .sub {
+  font-size: 20px; color: var(--fg-soft);
+  max-width: 560px; line-height: 1.5;
+}
+
+/* Filter strip */
+#explainer .filter-strip {
+  position: sticky; top: 0; z-index: 50;
+  background: hsla(0,0%,97%,0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--teal-faint);
+  padding: 10px 0;
+  transform: translateY(-120%);
+  transition: transform 0.3s ease;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+}
+#explainer .filter-strip.active { transform: translateY(0); }
+#explainer .filter-strip .inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 28px;
+  display: flex; align-items: center; gap: 14px;
+  flex-wrap: wrap;
+}
+#explainer .filter-strip .diamond { color: var(--teal); }
+#explainer .filter-strip .tag {
+  padding: 3px 10px;
+  background: var(--teal-bg);
+  color: var(--teal);
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+#explainer .filter-strip .count { color: var(--fg-soft); }
+#explainer .filter-strip .reset {
+  margin-left: auto;
+  cursor: pointer;
+  padding: 3px 10px;
+  border: 1px solid var(--fg-faint);
+  border-radius: 2px;
+  background: transparent;
+  font-family: inherit; font-size: inherit;
+  color: var(--fg-soft);
+  letter-spacing: 0.06em;
+}
+#explainer .filter-strip .reset:hover { border-color: var(--teal); color: var(--teal); }
+
+/* Sections */
+#explainer section.chapter { padding: 96px 0 40px; }
+#explainer section.chapter h2 {
+  font-size: 36px; font-weight: 300;
+  letter-spacing: -0.01em; line-height: 1.15;
+  margin-bottom: 20px;
+}
+#explainer section.chapter p {
+  color: var(--fg-soft);
+  margin-bottom: 18px;
+}
+#explainer section.chapter p strong { color: var(--fg); font-weight: 500; }
+#explainer .chapter-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+/* Canvas viz container */
+#explainer .viz-frame {
+  margin: 40px 0 20px;
+  background: var(--bg-soft);
+  border: 1px solid var(--fg-faint);
+  border-radius: 2px;
+}
+#explainer .viz-wide {
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  max-width: 100vw;
+  padding: 0 40px;
+}
+#explainer .viz-wide .viz-frame { max-width: 1400px; margin: 40px auto 20px; }
+#explainer .viz-caption {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 0.04em;
+  color: var(--fg-soft);
+  margin-top: 8px;
+  display: flex; justify-content: space-between;
+}
+#explainer canvas.viz { display: block; width: 100%; }
+#explainer .hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 0.08em;
+  color: var(--teal);
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--teal-faint);
+  background: var(--teal-bg);
+}
+#explainer #timeline-canvas { cursor: crosshair; }
+#explainer #raster-canvas, #explainer #spatial-canvas { cursor: pointer; }
+
+/* Player controls in Crescendo */
+#explainer .player {
+  display: flex; align-items: center; gap: 20px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--fg-faint);
+  background: var(--bg);
+  flex-wrap: wrap;
+}
+#explainer .player button {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 13px; font-weight: 400;
+  letter-spacing: 0.04em;
+  background: transparent;
+  color: var(--teal);
+  border: 1px solid var(--teal-faint);
+  padding: 8px 18px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+#explainer .player button:hover { border-color: var(--teal); background: var(--teal-faint); }
+#explainer .player button.sound-on {
+  background: var(--teal);
+  color: var(--bg);
+  border-color: var(--teal);
+}
+#explainer .player .time {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; color: var(--fg-soft);
+  min-width: 120px;
+}
+#explainer .player .progress {
+  height: 2px; background: var(--fg-faint); flex: 1;
+  min-width: 160px;
+  position: relative; cursor: pointer;
+}
+#explainer .player .progress-fill {
+  position: absolute; top: 0; left: 0; height: 100%;
+  background: var(--teal); width: 0%;
+  transition: width 0.05s linear;
+}
+#explainer .player .speed {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; color: var(--fg-soft);
+  cursor: pointer;
+  padding: 4px 10px;
+  border: 1px solid var(--fg-faint);
+  border-radius: 2px;
+}
+#explainer .player .speed:hover { color: var(--teal); border-color: var(--teal); }
+
+/* Tooltip */
+.tooltip {
+  position: fixed;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  background: hsla(220,20%,8%,0.92);
+  color: hsla(0,0%,97%,0.95);
+  padding: 8px 11px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s;
+  z-index: 1000;
+  border-radius: 2px;
+  white-space: nowrap;
+  max-width: 320px;
+  letter-spacing: 0.02em;
+}
+.tooltip strong { color: hsl(160 30% 65%); font-weight: 700; letter-spacing: 0.04em; }
+
+/* Footer */
+#explainer footer {
+  padding: 80px 0 60px;
+  border-top: 1px solid var(--fg-faint);
+  margin-top: 40px;
+}
+#explainer footer .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+#explainer footer h3 {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  font-weight: 400;
+}
+#explainer footer p, #explainer footer a {
+  color: var(--fg-soft);
+  font-size: 14px;
+  text-decoration: none;
+}
+#explainer footer a:hover { color: var(--teal); }
+
+#explainer .divider-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em;
+  color: var(--fg-faint);
+  text-transform: uppercase;
+  text-align: center;
+  margin: 64px 0 24px;
+}
+
+#explainer .pull {
+  margin: 48px auto;
+  font-size: 28px; font-weight: 300;
+  letter-spacing: -0.01em; line-height: 1.35;
+  max-width: 620px;
+  text-align: left;
+  color: var(--fg);
+}
+#explainer .pull .dash { color: var(--teal); }
+
+@media (max-width: 720px) {
+  #explainer .hero h1 { font-size: 38px; }
+  #explainer .hero .sub { font-size: 17px; }
+  #explainer section.chapter { padding: 64px 0 30px; }
+  #explainer section.chapter h2 { font-size: 26px; }
+  #explainer .pull { font-size: 20px; }
+  #explainer footer .cols { grid-template-columns: 1fr; gap: 30px; }
+  #explainer .viz-wide { padding: 0 8px; }
+  #toggle-pill { top: 18px; right: 18px; font-size: 10px; }
+  #hud { top: 18px; left: 18px; }
+  #hud .hud-title { font-size: 12px; }
+  #view-toggle { bottom: 96px; left: 18px; }
+  #transport { bottom: 18px; padding: 10px 14px; gap: 12px; }
+  #transport button { padding: 5px 10px; font-size: 12px; }
+  #start-inner h1 { font-size: clamp(88px, 22vw, 140px); margin-bottom: 24px; }
+}
+</style>
+</head>
+<body class="mode-listen">
+
+<!-- ════════════ START SCREEN ════════════ -->
+<div id="start-screen">
+  <div id="start-inner">
+    <div id="start-frost"></div>
+    <h1>fs437<a href="https://tentatively725.com" target="_blank" rel="noopener">*</a></h1>
+    <div class="start-desc">five days of a living mind</div>
+    <div id="start-hint">scroll to enter<span class="arrow">↓</span></div>
+  </div>
+  <div id="start-footer">
+    <div class="credit">data: <a href="https://finalspark.com" target="_blank" rel="noopener">finalspark · neuroplatform, vevey, switzerland</a></div>
+  </div>
+</div>
+
+<!-- ════════════ APP ════════════ -->
+<div id="app">
+  <!-- Toggle pill -->
+  <div id="toggle-pill">
+    <span id="t-listen" class="active">listen</span>
+    <span class="dot">·</span>
+    <span id="t-read">read</span>
+  </div>
+
+  <!-- ═════ THE ROOM ═════ -->
+  <div id="room">
+    <canvas id="three-canvas"></canvas>
+
+    <div id="hud">
+      <div class="hud-title">THE ROOM</div>
+      <div class="hud-meta">fs437 · 32 channels</div>
+      <div class="hud-divider"></div>
+      <div class="hud-time" id="hud-time">t = —</div>
+      <div class="hud-rate" id="hud-rate">rate = —</div>
+    </div>
+
+    <div id="view-toggle">
+      <button class="vt-btn active" id="vt-topdown">top-down</button>
+      <button class="vt-btn" id="vt-float">float</button>
+    </div>
+
+    <div id="transport">
+      <button id="room-play">▶ play</button>
+      <button id="room-sound">♪ sound off</button>
+      <span class="t-time" id="room-time">day 0.00 / 4.93</span>
+      <div class="t-progress" id="room-progress"><div class="t-progress-fill" id="room-progress-fill"></div></div>
+      <button id="room-speed">1×</button>
+    </div>
+
+    <div id="loading">loading dataset · 0%</div>
+    <div id="end-replay">↺ replay</div>
+  </div>
+
+  <!-- ═════ THE EXPLAINER ═════ -->
+  <div id="explainer">
+    <div class="tooltip" id="tooltip"></div>
+
+    <div class="filter-strip" id="filter-strip">
+      <div class="inner">
+        <span class="diamond">◇</span>
+        <span>viewing</span>
+        <span id="filter-tags"></span>
+        <span class="count" id="filter-count"></span>
+        <button class="reset" id="filter-reset">clear ✕</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <header class="hero">
+        <div class="eyebrow">tentatively725 · experiment 004</div>
+        <h1>fs437 &mdash; five days of a <em>living mind</em>.</h1>
+        <p class="sub">A human brain organoid, grown from stem cells in Vevey, Switzerland, sitting on a 32&#8209;electrode array. No body. No senses. No task. Just 118 hours of neurons firing at each other, rehearsing for a world that will never arrive.</p>
+      </header>
+    </div>
+
+    <div class="wrap">
+      <section class="chapter">
+        <div class="chapter-num">i · rhythm</div>
+        <h2>Five days of firing.</h2>
+        <p>Each thin vertical mark below is a one&#8209;minute window of spontaneous activity. Higher means more spikes in that minute &mdash; summed across all 32 electrodes. The organoid is not inputless&#8209;idle: it <strong>pulses, bursts, quiets, returns</strong>.</p>
+        <p>Look for the tall spikes. Those are <strong>network bursts</strong> &mdash; moments when thousands of neurons fire in near&#8209;synchrony, sweeping across the tissue like a wave, then falling silent for a few seconds before the next one. In a developing fetal brain these same waves teach the cortex how to wire itself. In fs437 they have nowhere to go.</p>
+      </section>
+    </div>
+    <div class="viz-wide">
+      <div class="viz-frame">
+        <div class="hint">drag to zoom · hover for detail · click outside to reset</div>
+        <canvas id="timeline-canvas" class="viz" height="240"></canvas>
+      </div>
+      <div class="wrap"><div class="viz-caption"><span>firing rate · spikes per minute · all 32 electrodes combined</span><span id="timeline-caption-right"></span></div></div>
+    </div>
+
+    <div class="wrap">
+      <section class="chapter">
+        <div class="chapter-num">ii · voices</div>
+        <h2>Thirty&#8209;two perspectives on the same tissue.</h2>
+        <p>The same five days, but now each electrode gets its own row. Darker means louder &mdash; more spikes detected at that location in that minute. Electrodes are not neurons; they are <strong>microscopic eavesdroppers</strong> listening to whichever cells happen to be nearby.</p>
+        <p>Notice how certain rows are nearly black &mdash; these electrodes sit near dense, active clusters of neurons. Others stay mostly pale. Click a row to isolate one electrode's story across the entire page.</p>
+      </section>
+    </div>
+    <div class="viz-wide">
+      <div class="viz-frame">
+        <div class="hint">click a row to isolate an electrode · hover for detail</div>
+        <canvas id="raster-canvas" class="viz" height="480"></canvas>
+      </div>
+      <div class="wrap"><div class="viz-caption"><span>electrode × time · each cell = 1 minute · darker = more spikes</span><span>32 channels × 7,096 minutes</span></div></div>
+    </div>
+
+    <div class="wrap">
+      <p class="pull"><span class="dash">&ldquo;</span>Spontaneous activity is not a bug &mdash; it is how brains wire themselves before they have anything to be wired for. The organoid never gets eyes. But the neurons don't know that.<span class="dash">&rdquo;</span></p>
+    </div>
+
+    <div class="wrap">
+      <section class="chapter">
+        <div class="chapter-num">iii · geography</div>
+        <h2>The map of the silence.</h2>
+        <p>The 32 electrodes sit under the organoid in a 4&#8239;&times;&#8239;8 grid, each about 200&nbsp;&micro;m apart. The size of each dot below reflects the <strong>total number of spikes</strong> that electrode heard across all five days &mdash; or across the time window you selected above. Click a dot to isolate one electrode.</p>
+      </section>
+    </div>
+    <div class="wrap">
+      <div class="viz-frame">
+        <div class="hint">click an electrode to isolate it · hover for detail</div>
+        <canvas id="spatial-canvas" class="viz" height="360"></canvas>
+      </div>
+      <div class="viz-caption"><span>electrode positions &middot; dot area &prop; spike count</span><span>4 × 8 MEA grid</span></div>
+    </div>
+
+    <div class="wrap">
+      <section class="chapter">
+        <div class="chapter-num">iv · crescendo</div>
+        <h2>The loudest minute.</h2>
+        <p id="peak-paragraph">At one particular moment during the five days, the organoid reached a crescendo &mdash; a single minute where more than <strong id="peak-count">—</strong> spikes fired across the 32 electrodes. Press play below to watch those spikes happen in real time, and <strong>toggle the sound on</strong> to hear each neuron as a pitched click &mdash; electrode position maps to note, amplitude to volume. This is what a small piece of living tissue sounds like, thinking to itself.</p>
+      </section>
+    </div>
+    <div class="wrap">
+      <div class="viz-frame">
+        <canvas id="burst-canvas" class="viz" height="440"></canvas>
+        <div class="player">
+          <button id="burst-play">▶ play</button>
+          <button id="burst-sound">♪ sound off</button>
+          <div class="time" id="burst-time">0.0s / 60.0s</div>
+          <div class="progress" id="burst-progress"><div class="progress-fill" id="burst-progress-fill"></div></div>
+          <div class="speed" id="burst-speed">1×</div>
+        </div>
+      </div>
+      <div class="viz-caption"><span>raw spike events, 60s window · 32 electrodes · real time</span><span id="burst-caption-right"></span></div>
+    </div>
+
+    <div class="wrap">
+      <section class="chapter">
+        <div class="chapter-num">v · shape</div>
+        <h2>The shape of a firing.</h2>
+        <p>Each spike has a <strong>voltage amplitude</strong> &mdash; how hard the signal pushed against the electrode. Below is the distribution, in microvolts. The two humps come from the biphasic shape of an action potential: ions rush in (the negative peak), then the membrane repolarises (the positive rebound). Select an electrode above to see only its amplitude signature.</p>
+      </section>
+    </div>
+    <div class="wrap">
+      <div class="viz-frame">
+        <canvas id="amp-canvas" class="viz" height="240"></canvas>
+      </div>
+      <div class="viz-caption"><span id="amp-caption-left">spike amplitude distribution · 2.6M events</span><span>–60 &micro;V &nbsp;—&nbsp; +60 &micro;V</span></div>
+    </div>
+
+    <div class="wrap">
+      <footer>
+        <div class="divider-text">· · ·</div>
+        <div class="cols">
+          <div>
+            <h3>Source</h3>
+            <p>Data courtesy of <a href="https://finalspark.com/" target="_blank" rel="noopener">FinalSpark</a> — Neuroplatform, Vevey, Switzerland.</p>
+            <p style="margin-top:8px;">Organoid: <code style="font-family:'Space Mono',monospace;">fs437</code> — recorded spontaneously across five days in June 2025.</p>
+          </div>
+          <div>
+            <h3>Context</h3>
+            <p>Part of <a href="https://tentatively725.com" target="_blank" rel="noopener">tentatively725</a>'s ongoing inquiry into <em>what happens at the boundaries of states of reality</em>. Here: the boundary between living tissue and signal, between mind and idleness, between a thing firing and a thing being <em>heard</em>.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<!-- placeholder for explainer summary JSON, populated by fetch -->
+<script id="fs437-data" type="application/json"></script>
+
+<!-- Three.js -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<!-- ════════════ ROOM (Three.js) ════════════ -->
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const ROWS = 4, COLS = 8, N_CH = ROWS * COLS;
+const SPACING = 1.7;
+
+// Build a halo texture (canvas radial gradient: teal core fading to transparent)
+function buildHaloTexture() {
+  const size = 256;
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const cx = size / 2, cy = size / 2;
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, size / 2);
+  // Teal HSL(160, 20%, 35%) ≈ rgb(72, 110, 95)
+  g.addColorStop(0.00, 'rgba(56, 88, 75, 1.0)');
+  g.addColorStop(0.18, 'rgba(56, 88, 75, 0.78)');
+  g.addColorStop(0.40, 'rgba(56, 88, 75, 0.32)');
+  g.addColorStop(0.70, 'rgba(56, 88, 75, 0.08)');
+  g.addColorStop(1.00, 'rgba(56, 88, 75, 0.0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  return tex;
+}
+
+// === Scene setup ===
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setSize(window.innerWidth, window.innerHeight, false);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf7f7f7);
+
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 200);
+
+// Top-down anchor: high y, slight horizontal jitter for drift
+const TOPDOWN_Y = 18;
+const FLOAT_INITIAL = new THREE.Vector3(9, 5, 11);
+
+camera.position.set(0, TOPDOWN_Y, 0.0001);
+camera.lookAt(0, 0, 0);
+
+// === Sprites for electrodes ===
+const haloTex = buildHaloTexture();
+const sprites = [];
+const electrodePos = new Array(N_CH);
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    const ch = r * COLS + c;
+    const x = (c - (COLS - 1) / 2) * SPACING;
+    const z = (r - (ROWS - 1) / 2) * SPACING;
+    electrodePos[ch] = { x, y: 0, z };
+
+    const mat = new THREE.SpriteMaterial({
+      map: haloTex,
+      color: 0xffffff,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0.65,
+    });
+    const s = new THREE.Sprite(mat);
+    s.position.set(x, 0, z);
+    s.scale.set(1.5, 1.5, 1.5);
+    scene.add(s);
+    sprites.push({ sprite: s, mat, ch, pulse: 0, baseScale: 1.5 });
+  }
+}
+
+// Faint floor grid (so the room reads as 3D)
+const gridSize = SPACING * COLS + 2;
+const grid = new THREE.GridHelper(gridSize, 16, 0x000000, 0x000000);
+grid.material.opacity = 0.04;
+grid.material.transparent = true;
+grid.position.y = -0.02;
+scene.add(grid);
+
+// === OrbitControls for float ===
+const controls = new OrbitControls(camera, canvas);
+controls.enabled = false;
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 4;
+controls.maxDistance = 40;
+controls.target.set(0, 0, 0);
+controls.enablePan = false;
+
+// === View mode state ===
+let viewMode = 'topdown'; // or 'float'
+let driftAngle = 0;
+let tween = null; // { from, to, fromTarget, toTarget, start, dur }
+
+const TWEEN_DUR = 900;
+function setViewMode(mode) {
+  if (mode === viewMode) return;
+  const fromPos = camera.position.clone();
+  let toPos, toTarget;
+  if (mode === 'topdown') {
+    toPos = new THREE.Vector3(0, TOPDOWN_Y, 0.0001);
+    toTarget = new THREE.Vector3(0, 0, 0);
+  } else {
+    toPos = FLOAT_INITIAL.clone();
+    toTarget = new THREE.Vector3(0, 0, 0);
+  }
+  const fromTarget = controls.target.clone();
+  tween = { from: fromPos, to: toPos, fromTarget, toTarget, start: performance.now(), dur: TWEEN_DUR };
+  viewMode = mode;
+  controls.enabled = false;
+  document.getElementById('vt-topdown').classList.toggle('active', mode === 'topdown');
+  document.getElementById('vt-float').classList.toggle('active', mode === 'float');
+}
+
+function tweenUpdate(now) {
+  if (!tween) return false;
+  const t = Math.min(1, (now - tween.start) / tween.dur);
+  const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  camera.position.lerpVectors(tween.from, tween.to, e);
+  const tgt = new THREE.Vector3().lerpVectors(tween.fromTarget, tween.toTarget, e);
+  camera.lookAt(tgt);
+  if (t >= 1) {
+    controls.target.copy(tween.toTarget);
+    if (viewMode === 'float') controls.enabled = true;
+    tween = null;
+    return false;
+  }
+  return true;
+}
+
+// === Audio ===
+let audioCtx = null;
+let masterGain = null;
+let soundOn = false;
+let audioBudget = 0;
+const MAX_CLICKS_PER_SEC = 40;
+
+const pentatonicFreqs = (() => {
+  const colOffsets = [0, 2, 4, 7, 9, 12, 14, 16];
+  const rowBase = [72, 60, 48, 36];
+  const out = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const midi = rowBase[r] + colOffsets[c];
+    out.push(440 * Math.pow(2, (midi - 69) / 12));
+  }
+  return out;
+})();
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.45;
+  masterGain.connect(audioCtx.destination);
+}
+
+function playClick(ch, ampI8) {
+  if (!soundOn || !audioCtx) return;
+  if (audioBudget < 1) return;
+  audioBudget -= 1;
+
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  osc.frequency.value = pentatonicFreqs[ch];
+  const ampAbs = Math.abs(ampI8);
+  osc.type = ampAbs > 50 ? 'triangle' : 'sine';
+  const vol = Math.min(0.16, 0.03 + (ampAbs / 127) * 0.13);
+  g.gain.setValueAtTime(0, now);
+  g.gain.linearRampToValueAtTime(vol, now + 0.003);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+
+  let dest = masterGain;
+  if (viewMode === 'float') {
+    const panner = audioCtx.createPanner();
+    panner.panningModel = 'HRTF';
+    panner.distanceModel = 'inverse';
+    panner.refDistance = 4;
+    panner.maxDistance = 40;
+    panner.rolloffFactor = 1.5;
+    const pos = electrodePos[ch];
+    if (panner.positionX) {
+      panner.positionX.value = pos.x;
+      panner.positionY.value = pos.y;
+      panner.positionZ.value = pos.z;
+    } else {
+      panner.setPosition(pos.x, pos.y, pos.z);
+    }
+    panner.connect(masterGain);
+    dest = panner;
+  }
+  osc.connect(g).connect(dest);
+  osc.start(now);
+  osc.stop(now + 0.1);
+}
+
+function updateAudioListener() {
+  if (!audioCtx || viewMode !== 'float') return;
+  const l = audioCtx.listener;
+  const fwd = new THREE.Vector3();
+  camera.getWorldDirection(fwd);
+  if (l.positionX) {
+    l.positionX.value = camera.position.x;
+    l.positionY.value = camera.position.y;
+    l.positionZ.value = camera.position.z;
+    l.forwardX.value = fwd.x;
+    l.forwardY.value = fwd.y;
+    l.forwardZ.value = fwd.z;
+    l.upX.value = 0;
+    l.upY.value = 1;
+    l.upZ.value = 0;
+  } else {
+    l.setPosition(camera.position.x, camera.position.y, camera.position.z);
+    l.setOrientation(fwd.x, fwd.y, fwd.z, 0, 1, 0);
+  }
+}
+
+// === Playback ===
+let spikeCount = 0;
+let dtMs = null, chArr = null, ampArr = null;
+let t0Unix = 0, datasetSpanMs = 0;
+let playbackMs = 0;
+let cursor = 0;
+let playing = false;
+let speedIdx = 0;
+const speeds = [1, 2, 4, 8];
+const BASE_SPEEDUP = 60;
+let lastFrameT = 0;
+let hudCursor = 0;
+
+function setPlaybackMs(ms) {
+  playbackMs = Math.max(0, Math.min(datasetSpanMs, ms));
+  // Reset cursor — walk forward from start (simple, runs once)
+  cursor = 0;
+  while (cursor < spikeCount && dtMs[cursor] < playbackMs) cursor++;
+  hudCursor = cursor;
+  for (const s of sprites) s.pulse = 0;
+}
+
+function updateHUD() {
+  if (!dtMs) return;
+  // Rate: spikes in last 1000ms of dataset time
+  const winStart = Math.max(0, playbackMs - 1000);
+  while (hudCursor > 0 && dtMs[hudCursor - 1] >= winStart) hudCursor--;
+  while (hudCursor < cursor && dtMs[hudCursor] < winStart) hudCursor++;
+  const rate = cursor - hudCursor;
+
+  const totalMs = t0Unix * 1000 + playbackMs;
+  const date = new Date(totalMs);
+  const iso = date.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+  document.getElementById('hud-time').textContent = 't = ' + iso;
+  document.getElementById('hud-rate').textContent = 'rate = ' + String(rate).padStart(4) + ' / sec';
+
+  const dayProgress = playbackMs / (86400 * 1000);
+  const totalDays = datasetSpanMs / (86400 * 1000);
+  document.getElementById('room-time').textContent =
+    'day ' + dayProgress.toFixed(2) + ' / ' + totalDays.toFixed(2);
+  document.getElementById('room-progress-fill').style.width =
+    (playbackMs / datasetSpanMs * 100) + '%';
+}
+
+// === Animation loop ===
+function animate(now) {
+  requestAnimationFrame(animate);
+  const dt = lastFrameT ? Math.min(0.1, (now - lastFrameT) / 1000) : 0;
+  lastFrameT = now;
+
+  // Replenish audio budget
+  audioBudget = Math.min(MAX_CLICKS_PER_SEC, audioBudget + MAX_CLICKS_PER_SEC * dt);
+
+  const tweening = tweenUpdate(now);
+
+  if (!tweening && viewMode === 'topdown') {
+    driftAngle += dt * 0.06;
+    const r = 0.9;
+    camera.position.x = Math.sin(driftAngle) * r;
+    camera.position.z = Math.cos(driftAngle) * r;
+    camera.position.y = TOPDOWN_Y;
+    camera.lookAt(0, 0, 0);
+  }
+  if (!tweening && viewMode === 'float') controls.update();
+
+  updateAudioListener();
+
+  // Advance playback
+  if (playing && dtMs) {
+    const speedMul = speeds[speedIdx] * BASE_SPEEDUP;
+    playbackMs += dt * 1000 * speedMul;
+    if (playbackMs >= datasetSpanMs) {
+      playbackMs = datasetSpanMs;
+      playing = false;
+      document.getElementById('room-play').textContent = '▶ play';
+      document.getElementById('end-replay').classList.add('visible');
+    }
+  }
+
+  // Dispatch spikes up to current time
+  if (dtMs) {
+    while (cursor < spikeCount && dtMs[cursor] <= playbackMs) {
+      const ch = chArr[cursor];
+      const amp = ampArr[cursor];
+      sprites[ch].pulse = Math.min(1.6, sprites[ch].pulse + 0.55);
+      playClick(ch, amp);
+      cursor++;
+    }
+  }
+
+  // Decay pulse + apply scale + opacity
+  for (const s of sprites) {
+    s.pulse = Math.max(0, s.pulse - dt * 4.5);
+    const scale = s.baseScale + s.pulse * 0.85;
+    s.sprite.scale.set(scale, scale, scale);
+    s.mat.opacity = 0.6 + Math.min(0.4, s.pulse * 0.4);
+  }
+
+  updateHUD();
+  renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+});
+
+// === UI wiring ===
+document.getElementById('room-play').addEventListener('click', () => {
+  if (!dtMs) return;
+  if (playbackMs >= datasetSpanMs) setPlaybackMs(0);
+  playing = !playing;
+  document.getElementById('room-play').textContent = playing ? '❚❚ pause' : '▶ play';
+  if (playing) document.getElementById('end-replay').classList.remove('visible');
+});
+
+document.getElementById('room-sound').addEventListener('click', () => {
+  soundOn = !soundOn;
+  if (soundOn) {
+    initAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    document.getElementById('room-sound').textContent = '♪ sound on';
+    document.getElementById('room-sound').classList.add('sound-on');
+  } else {
+    document.getElementById('room-sound').textContent = '♪ sound off';
+    document.getElementById('room-sound').classList.remove('sound-on');
+  }
+});
+
+document.getElementById('room-speed').addEventListener('click', () => {
+  speedIdx = (speedIdx + 1) % speeds.length;
+  document.getElementById('room-speed').textContent = speeds[speedIdx] + '×';
+});
+
+document.getElementById('room-progress').addEventListener('click', (e) => {
+  if (!dtMs) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const frac = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  setPlaybackMs(datasetSpanMs * frac);
+  document.getElementById('end-replay').classList.remove('visible');
+});
+
+document.getElementById('vt-topdown').addEventListener('click', () => setViewMode('topdown'));
+document.getElementById('vt-float').addEventListener('click', () => setViewMode('float'));
+
+document.getElementById('end-replay').addEventListener('click', () => {
+  setPlaybackMs(0);
+  playing = true;
+  document.getElementById('room-play').textContent = '❚❚ pause';
+  document.getElementById('end-replay').classList.remove('visible');
+});
+
+// === Load spikes binary ===
+async function loadSpikes() {
+  const loadingEl = document.getElementById('loading');
+  loadingEl.textContent = 'loading dataset · 0%';
+  try {
+    const resp = await fetch('data/fs437_spikes.bin');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const totalHdr = resp.headers.get('content-length');
+    const total = totalHdr ? parseInt(totalHdr, 10) : 15_657_366;
+    const reader = resp.body.getReader();
+    const chunks = [];
+    let received = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      received += value.byteLength;
+      const pct = Math.min(99, Math.floor((received / total) * 100));
+      loadingEl.textContent = 'loading dataset · ' + pct + '%';
+    }
+    const buf = new Uint8Array(received);
+    let offset = 0;
+    for (const ch of chunks) { buf.set(ch, offset); offset += ch.byteLength; }
+    const view = new DataView(buf.buffer);
+
+    const magic = String.fromCharCode(buf[0], buf[1], buf[2], buf[3], buf[4]);
+    if (magic !== 'FS437') throw new Error('bad magic: ' + magic);
+    spikeCount = view.getUint32(8, true);
+    t0Unix = view.getUint32(12, true);
+
+    loadingEl.textContent = 'decoding ' + (spikeCount / 1e6).toFixed(1) + 'M spikes …';
+    // yield to let the UI update
+    await new Promise(r => setTimeout(r, 30));
+
+    dtMs = new Uint32Array(spikeCount);
+    chArr = new Uint8Array(spikeCount);
+    ampArr = new Int8Array(spikeCount);
+
+    const HEADER = 16, REC = 6;
+    for (let i = 0; i < spikeCount; i++) {
+      const off = HEADER + i * REC;
+      dtMs[i] = view.getUint32(off, true);
+      chArr[i] = view.getUint8(off + 4);
+      ampArr[i] = view.getInt8(off + 5);
+    }
+    datasetSpanMs = dtMs[spikeCount - 1];
+
+    loadingEl.classList.add('done');
+    document.getElementById('hud').classList.add('visible');
+    document.getElementById('view-toggle').classList.add('visible');
+    document.getElementById('transport').classList.add('visible');
+
+    // Auto-start playback (silent — user enables sound separately)
+    playing = true;
+    document.getElementById('room-play').textContent = '❚❚ pause';
+  } catch (err) {
+    loadingEl.textContent = 'failed to load dataset: ' + err.message;
+    console.error(err);
+  }
+}
+
+// Expose a getter so the glue script can know when ready
+window.__fs437Room = {
+  initWhenLifted: () => {
+    requestAnimationFrame(animate);
+    loadSpikes();
+  },
+};
+</script>
+
+<!-- ════════════ EXPLAINER JS (existing, lightly adapted) ════════════ -->
+<script>
+window.__fs437Explainer = {
+  init() {
+    const d = window.__fs437SummaryData;
+    if (!d) { console.error('summary data not loaded'); return; }
+
+    const FG_SOFT = 'hsla(220,20%,8%,0.55)';
+    const FG_FAINT = 'hsla(220,20%,8%,0.08)';
+    const TEAL = 'hsl(160 20% 35%)';
+    const TEAL_SOFT = 'hsla(160,20%,35%,0.55)';
+    const TEAL_BG = 'hsla(160,20%,35%,0.14)';
+
+    const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const fmt = n => n.toLocaleString();
+    const t0 = new Date(d.t_start_iso), t1 = new Date(d.t_end_iso);
+
+    const state = { filterBins: null, selectedCh: null, soundOn: false };
+    const G = { timeline: null, raster: null, spatial: null, amp: null };
+
+    const peakCountEl = document.getElementById('peak-count');
+    if (peakCountEl) peakCountEl.textContent = fmt(d.burst_window.spikes.length);
+    const peakDate = new Date(d.peak_bin_t_unix * 1000);
+    const captionRight = document.getElementById('burst-caption-right');
+    if (captionRight) captionRight.textContent =
+      `${mo[peakDate.getMonth()]} ${peakDate.getDate()}, ${String(peakDate.getHours()).padStart(2,'0')}:${String(peakDate.getMinutes()).padStart(2,'0')} local`;
+
+    function prepCanvas(canvas) {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { ctx, w: rect.width, h: rect.height };
+    }
+    function filterRange() {
+      if (!state.filterBins) return [0, d.n_bins - 1];
+      return state.filterBins;
+    }
+    function filteredChTotals() {
+      const [s, e] = filterRange();
+      if (s === 0 && e === d.n_bins - 1) return d.per_ch_total;
+      const sums = new Array(d.n_electrodes).fill(0);
+      for (let b = s; b <= e; b++) {
+        const row = d.per_bin_per_ch[b];
+        for (let c = 0; c < d.n_electrodes; c++) sums[c] += row[c];
+      }
+      return sums;
+    }
+    function binToDate(b) { return new Date(t0.getTime() + b * d.bin_seconds * 1000); }
+    function fmtDate(date) {
+      return `${mo[date.getMonth()]} ${date.getDate()} · ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+    }
+    function median(arr) {
+      const sorted = [...arr].sort((a,b)=>a-b);
+      const m = Math.floor(sorted.length/2);
+      return sorted.length % 2 ? sorted[m] : Math.round((sorted[m-1]+sorted[m])/2);
+    }
+
+    const tooltip = document.getElementById('tooltip');
+    function showTip(e, html) {
+      tooltip.innerHTML = html;
+      const pad = 14;
+      let x = e.clientX + pad, y = e.clientY + pad;
+      const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+      if (x + tw > window.innerWidth - 10) x = e.clientX - tw - pad;
+      if (y + th > window.innerHeight - 10) y = e.clientY - th - pad;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+      tooltip.style.opacity = 1;
+    }
+    function hideTip() { tooltip.style.opacity = 0; }
+
+    const filterStrip = document.getElementById('filter-strip');
+    const filterTags = document.getElementById('filter-tags');
+    const filterCount = document.getElementById('filter-count');
+    document.getElementById('filter-reset').addEventListener('click', () => {
+      state.filterBins = null; state.selectedCh = null; renderAll();
+    });
+    function updateFilterStrip() {
+      const tags = [];
+      if (state.selectedCh !== null) tags.push(`<span class="tag">ch${String(state.selectedCh).padStart(2,'0')} isolated</span>`);
+      if (state.filterBins !== null) {
+        const [s, e] = state.filterBins;
+        tags.push(`<span class="tag">${fmtDate(binToDate(s))} → ${fmtDate(binToDate(e+1))}</span>`);
+      }
+      if (!tags.length) { filterStrip.classList.remove('active'); return; }
+      filterStrip.classList.add('active');
+      filterTags.innerHTML = tags.join(' ');
+      const [s, e] = filterRange();
+      let total = 0;
+      if (state.selectedCh !== null) {
+        for (let b = s; b <= e; b++) total += d.per_bin_per_ch[b][state.selectedCh];
+      } else {
+        for (let b = s; b <= e; b++) total += d.per_bin_total[b];
+      }
+      const pct = (total / d.n_spikes_total * 100).toFixed(1);
+      filterCount.textContent = `${fmt(total)} spikes · ${pct}% of total`;
+    }
+
+    /* ── 1. TIMELINE ── */
+    function drawTimeline() {
+      const canvas = document.getElementById('timeline-canvas');
+      const { ctx, w, h } = prepCanvas(canvas);
+      ctx.fillStyle = 'hsl(0 0% 97%)'; ctx.fillRect(0,0,w,h);
+      const useCh = state.selectedCh;
+      const bins = useCh === null ? d.per_bin_total : d.per_bin_per_ch.map(row => row[useCh]);
+      const n = bins.length;
+      const maxV = Math.max(...bins) || 1;
+      const padX = 40, padTop = 20, padBottom = 30;
+      const plotW = w - padX*2, plotH = h - padTop - padBottom;
+      ctx.strokeStyle = FG_FAINT;
+      ctx.beginPath();
+      ctx.moveTo(padX, padTop + plotH); ctx.lineTo(padX + plotW, padTop + plotH);
+      ctx.stroke();
+      const dayMs = 86400 * 1000;
+      const startMs = t0.getTime(), endMs = t1.getTime();
+      let dayStart = new Date(startMs); dayStart.setHours(0,0,0,0);
+      dayStart = dayStart.getTime() + dayMs;
+      ctx.strokeStyle = FG_FAINT;
+      ctx.setLineDash([2, 3]);
+      ctx.fillStyle = FG_SOFT; ctx.font = '10px "Space Mono", monospace';
+      while (dayStart < endMs) {
+        const frac = (dayStart - startMs) / (endMs - startMs);
+        const x = padX + frac * plotW;
+        ctx.beginPath(); ctx.moveTo(x, padTop); ctx.lineTo(x, padTop + plotH); ctx.stroke();
+        const dt = new Date(dayStart);
+        ctx.fillText(`${mo[dt.getMonth()]} ${dt.getDate()}`, x + 4, h - 10);
+        dayStart += dayMs;
+      }
+      ctx.setLineDash([]);
+      const barW = plotW / n;
+      const inside = state.filterBins;
+      for (let i = 0; i < n; i++) {
+        const v = bins[i];
+        if (v === 0) continue;
+        const bh = (v / maxV) * plotH;
+        const x = padX + i * barW;
+        const y = padTop + plotH - bh;
+        let alpha = 0.25 + 0.6 * (v / maxV);
+        let color = `hsla(220,20%,8%,${alpha})`;
+        if (inside && (i < inside[0] || i > inside[1])) {
+          color = `hsla(220,20%,8%,${alpha * 0.22})`;
+        } else if (inside) {
+          color = `hsla(160,20%,35%,${alpha + 0.15})`;
+        }
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, Math.max(barW * 0.85, 0.5), bh);
+      }
+      const peakFrac = d.peak_bin / n;
+      const px = padX + peakFrac * plotW;
+      ctx.strokeStyle = TEAL; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(px, padTop - 6); ctx.lineTo(px, padTop + plotH); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = FG_SOFT;
+      ctx.font = '10px "Space Mono", monospace';
+      ctx.fillText(`${fmt(maxV)} max`, 6, padTop + 10);
+      ctx.fillText('0', 6, padTop + plotH);
+      if (state.filterBins) {
+        const [s, e] = state.filterBins;
+        const sx = padX + (s / n) * plotW;
+        const ex = padX + ((e + 1) / n) * plotW;
+        ctx.fillStyle = TEAL_BG;
+        ctx.fillRect(sx, padTop, ex - sx, plotH);
+        ctx.strokeStyle = TEAL;
+        ctx.beginPath();
+        ctx.moveTo(sx, padTop); ctx.lineTo(sx, padTop + plotH);
+        ctx.moveTo(ex, padTop); ctx.lineTo(ex, padTop + plotH);
+        ctx.stroke();
+      }
+      G.timeline = { padX, padTop, plotW, plotH, n, bins };
+      const m = median(bins);
+      const label = useCh === null
+        ? `all electrodes · max ${fmt(maxV)} / median ${fmt(m)} spikes/min`
+        : `ch${state.selectedCh} only · max ${fmt(maxV)} / median ${fmt(m)} spikes/min`;
+      document.getElementById('timeline-caption-right').textContent = label;
+    }
+
+    (() => {
+      const canvas = document.getElementById('timeline-canvas');
+      let dragging = false, dragStartBin = null, dragMoved = false;
+      function binAt(e) {
+        if (!G.timeline) return null;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const { padX, plotW, n } = G.timeline;
+        const frac = (x - padX) / plotW;
+        if (frac < 0 || frac > 1) return null;
+        return Math.min(n - 1, Math.max(0, Math.floor(frac * n)));
+      }
+      canvas.addEventListener('mousedown', (e) => {
+        const b = binAt(e); if (b === null) return;
+        dragging = true; dragStartBin = b; dragMoved = false;
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const b = binAt(e); if (b === null) return;
+        if (Math.abs(b - dragStartBin) >= 2) dragMoved = true;
+        const s = Math.min(dragStartBin, b);
+        const ee = Math.max(dragStartBin, b);
+        state.filterBins = [s, ee];
+        drawTimeline();
+        updateFilterStrip();
+      });
+      window.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        if (!dragMoved) { state.filterBins = null; renderAll(); }
+        else { renderAll(); }
+      });
+      canvas.addEventListener('mousemove', (e) => {
+        if (dragging) return;
+        const b = binAt(e);
+        if (b === null || !G.timeline) { hideTip(); return; }
+        const bins = G.timeline.bins;
+        const dt = binToDate(b);
+        showTip(e, `<strong>${fmtDate(dt)}</strong><br>${fmt(bins[b])} spikes / min`);
+      });
+      canvas.addEventListener('mouseleave', hideTip);
+    })();
+
+    /* ── 2. RASTER ── */
+    function drawRaster() {
+      const canvas = document.getElementById('raster-canvas');
+      const { ctx, w, h } = prepCanvas(canvas);
+      ctx.fillStyle = 'hsl(0 0% 97%)'; ctx.fillRect(0,0,w,h);
+      const [sBin, eBin] = filterRange();
+      const nBins = eBin - sBin + 1;
+      const chN = d.n_electrodes;
+      const padX = 50, padY = 30;
+      const plotW = w - padX*2, plotH = h - padY*2;
+      const cellH = plotH / chN;
+      const cellW = plotW / nBins;
+      let globalMax = 0;
+      for (let b = sBin; b <= eBin; b++) {
+        const row = d.per_bin_per_ch[b];
+        for (let c = 0; c < chN; c++) if (row[c] > globalMax) globalMax = row[c];
+      }
+      if (globalMax === 0) globalMax = 1;
+      const gamma = 0.5;
+      for (let t = 0; t < nBins; t++) {
+        const row = d.per_bin_per_ch[sBin + t];
+        for (let c = 0; c < chN; c++) {
+          const v = row[c];
+          if (v === 0) continue;
+          const a = Math.pow(v / globalMax, gamma);
+          const isSelRow = state.selectedCh === c;
+          const isDim = state.selectedCh !== null && !isSelRow;
+          const color = isSelRow
+            ? `hsla(160,20%,35%,${a})`
+            : `hsla(220,20%,8%,${isDim ? a * 0.18 : a})`;
+          ctx.fillStyle = color;
+          ctx.fillRect(padX + t*cellW, padY + c*cellH, Math.max(cellW, 0.5), Math.max(cellH-0.5, 1));
+        }
+      }
+      if (state.selectedCh !== null) {
+        const c = state.selectedCh;
+        ctx.strokeStyle = TEAL;
+        ctx.strokeRect(padX - 1, padY + c*cellH - 1, plotW + 2, cellH + 1);
+      }
+      ctx.font = '10px "Space Mono", monospace';
+      for (let c = 0; c < chN; c += 4) {
+        ctx.fillStyle = state.selectedCh === c ? TEAL : FG_SOFT;
+        ctx.fillText(`ch${String(c).padStart(2,'0')}`, 8, padY + c*cellH + cellH*0.7);
+      }
+      if (state.selectedCh !== null) {
+        ctx.fillStyle = TEAL;
+        ctx.fillText(`ch${String(state.selectedCh).padStart(2,'0')}`, 8, padY + state.selectedCh*cellH + cellH*0.7);
+      }
+      const dayMs = 86400 * 1000;
+      const startMs = binToDate(sBin).getTime();
+      const endMs = binToDate(eBin + 1).getTime();
+      let dayStart = new Date(startMs); dayStart.setHours(0,0,0,0);
+      dayStart = dayStart.getTime() + dayMs;
+      ctx.strokeStyle = 'hsla(220,20%,8%,0.15)';
+      ctx.setLineDash([2,3]);
+      ctx.fillStyle = FG_SOFT;
+      while (dayStart < endMs) {
+        const frac = (dayStart - startMs) / (endMs - startMs);
+        const x = padX + frac * plotW;
+        ctx.beginPath(); ctx.moveTo(x, padY); ctx.lineTo(x, padY + plotH); ctx.stroke();
+        const dt = new Date(dayStart);
+        ctx.fillText(`${mo[dt.getMonth()]} ${dt.getDate()}`, x + 4, h - 10);
+        dayStart += dayMs;
+      }
+      ctx.setLineDash([]);
+      G.raster = { padX, padY, plotW, plotH, cellW, cellH, nBins, sBin, eBin, chN };
+    }
+    (() => {
+      const canvas = document.getElementById('raster-canvas');
+      function hit(e) {
+        if (!G.raster) return null;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        const { padX, padY, plotW, plotH, cellW, cellH, sBin, chN } = G.raster;
+        if (x < padX || x > padX + plotW || y < padY || y > padY + plotH) return null;
+        const t = Math.floor((x - padX) / cellW);
+        const c = Math.floor((y - padY) / cellH);
+        if (c < 0 || c >= chN) return null;
+        return { bin: sBin + t, ch: c };
+      }
+      canvas.addEventListener('mousemove', (e) => {
+        const hh = hit(e);
+        if (!hh) { hideTip(); return; }
+        const v = d.per_bin_per_ch[hh.bin][hh.ch];
+        showTip(e, `<strong>ch${String(hh.ch).padStart(2,'0')}</strong> · ${fmtDate(binToDate(hh.bin))}<br>${fmt(v)} spikes / min`);
+      });
+      canvas.addEventListener('mouseleave', hideTip);
+      canvas.addEventListener('click', (e) => {
+        const hh = hit(e); if (!hh) return;
+        state.selectedCh = (state.selectedCh === hh.ch) ? null : hh.ch;
+        renderAll();
+      });
+    })();
+
+    /* ── 3. SPATIAL ── */
+    function drawSpatial() {
+      const canvas = document.getElementById('spatial-canvas');
+      const { ctx, w, h } = prepCanvas(canvas);
+      ctx.fillStyle = 'hsl(0 0% 97%)'; ctx.fillRect(0,0,w,h);
+      const totals = filteredChTotals();
+      const maxT = Math.max(...totals) || 1;
+      const rows = 4, cols = 8;
+      const gridW = Math.min(w - 160, 900);
+      const gridH = (gridW / cols) * rows * 0.6;
+      const ox = (w - gridW) / 2, oy = (h - gridH) / 2;
+      const cellW = gridW / cols, cellH = gridH / rows;
+      ctx.strokeStyle = FG_FAINT;
+      ctx.setLineDash([1, 4]);
+      for (let r=0; r<=rows; r++) { ctx.beginPath(); ctx.moveTo(ox, oy+r*cellH); ctx.lineTo(ox+gridW, oy+r*cellH); ctx.stroke(); }
+      for (let c=0; c<=cols; c++) { ctx.beginPath(); ctx.moveTo(ox+c*cellW, oy); ctx.lineTo(ox+c*cellW, oy+gridH); ctx.stroke(); }
+      ctx.setLineDash([]);
+      const positions = [];
+      for (let r=0; r<rows; r++) for (let c=0; c<cols; c++) {
+        const ch = r*cols + c;
+        const v = totals[ch];
+        const cx = ox + c*cellW + cellW/2;
+        const cy = oy + r*cellH + cellH/2;
+        const rad = Math.sqrt(v / maxT) * (Math.min(cellW,cellH) * 0.42);
+        const isSel = state.selectedCh === ch;
+        const isDim = state.selectedCh !== null && !isSel;
+        const haloCol = isSel ? 'hsla(160,20%,35%,0.35)' : 'hsla(160,20%,35%,0.18)';
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad*2.2);
+        g.addColorStop(0, haloCol);
+        g.addColorStop(1, 'hsla(160,20%,35%,0.0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(cx, cy, rad*2.2, 0, Math.PI*2); ctx.fill();
+        const alpha = isDim ? 0.18 : (0.55 + 0.4*(v/maxT));
+        const hue = isSel ? '160,20%,35%' : '220,20%,8%';
+        ctx.fillStyle = `hsla(${hue},${alpha})`;
+        ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI*2); ctx.fill();
+        if (isSel) {
+          ctx.strokeStyle = TEAL;
+          ctx.beginPath(); ctx.arc(cx, cy, rad + 6, 0, Math.PI*2); ctx.stroke();
+        }
+        ctx.fillStyle = isSel ? TEAL : (isDim ? 'hsla(220,20%,8%,0.3)' : FG_SOFT);
+        ctx.font = '9px "Space Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`ch${ch}`, cx, cy + Math.max(rad, 8) + 12);
+        ctx.fillText(`${(v/1000).toFixed(v >= 1000 ? 0 : 1)}k`, cx, cy + Math.max(rad, 8) + 24);
+        positions.push({ cx, cy, rad: Math.max(rad, 10), ch });
+      }
+      ctx.textAlign = 'start';
+      G.spatial = { positions };
+    }
+    (() => {
+      const canvas = document.getElementById('spatial-canvas');
+      function hit(e) {
+        if (!G.spatial) return null;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        for (const p of G.spatial.positions) {
+          const dx = x - p.cx, dy = y - p.cy;
+          if (dx*dx + dy*dy < p.rad*p.rad) return p;
+        }
+        return null;
+      }
+      canvas.addEventListener('mousemove', (e) => {
+        const p = hit(e);
+        if (!p) { hideTip(); canvas.style.cursor = 'default'; return; }
+        canvas.style.cursor = 'pointer';
+        const totals = filteredChTotals();
+        const v = totals[p.ch];
+        const sum = totals.reduce((a,b)=>a+b,0) || 1;
+        const pct = (v / sum * 100).toFixed(1);
+        const r = Math.floor(p.ch/8), c = p.ch%8;
+        showTip(e, `<strong>ch${String(p.ch).padStart(2,'0')}</strong> · row ${r}, col ${c}<br>${fmt(v)} spikes<br><span style="opacity:0.7">${pct}% of selection</span>`);
+      });
+      canvas.addEventListener('mouseleave', () => { hideTip(); canvas.style.cursor = 'default'; });
+      canvas.addEventListener('click', (e) => {
+        const p = hit(e);
+        if (!p) { state.selectedCh = null; renderAll(); return; }
+        state.selectedCh = (state.selectedCh === p.ch) ? null : p.ch;
+        renderAll();
+      });
+    })();
+
+    /* ── 4. BURST playback ── */
+    const burstCanvas = document.getElementById('burst-canvas');
+    const burstSpikes = d.burst_window.spikes;
+    const burstDuration = d.burst_window.duration_seconds * 1000;
+    let burstPlaying = false, burstStartT = 0, burstElapsed = 0, burstSpeed = 1.0, burstFrame = null;
+    const particles = [];
+    let burstSpikeCursor = 0;
+
+    function burstDims(w, h) {
+      const rows = 4, cols = 8;
+      const gridW = Math.min(w - 120, 1000);
+      const gridH = (gridW / cols) * rows * 0.6;
+      const ox = (w - gridW) / 2, oy = (h - gridH) / 2;
+      const cellW = gridW / cols, cellH = gridH / rows;
+      return { rows, cols, ox, oy, cellW, cellH };
+    }
+    function drawBurstGrid(ctx, w, h) {
+      const {rows, cols, ox, oy, cellW, cellH} = burstDims(w,h);
+      ctx.strokeStyle = FG_FAINT;
+      ctx.setLineDash([1, 4]);
+      for (let r=0; r<=rows; r++) { ctx.beginPath(); ctx.moveTo(ox, oy+r*cellH); ctx.lineTo(ox+cols*cellW, oy+r*cellH); ctx.stroke(); }
+      for (let c=0; c<=cols; c++) { ctx.beginPath(); ctx.moveTo(ox+c*cellW, oy); ctx.lineTo(ox+c*cellW, oy+rows*cellH); ctx.stroke(); }
+      ctx.setLineDash([]);
+      ctx.fillStyle = FG_FAINT;
+      for (let r=0; r<rows; r++) for (let c=0; c<cols; c++) {
+        const cx = ox + c*cellW + cellW/2, cy = oy + r*cellH + cellH/2;
+        ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI*2); ctx.fill();
+      }
+    }
+    function drawBurstParticles(ctx, w, h, nowMs) {
+      const { ox, oy, cellW, cellH } = burstDims(w,h);
+      const life = 900;
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        const age = nowMs - p.birth;
+        if (age > life) { particles.splice(i,1); continue; }
+        const tt = age / life;
+        const alpha = Math.max(0, 1 - tt);
+        const ch = p.ch;
+        const r = Math.floor(ch / 8), c = ch % 8;
+        const cx = ox + c*cellW + cellW/2;
+        const cy = oy + r*cellH + cellH/2;
+        const ampAbs = Math.min(Math.abs(p.amp) / 50, 1);
+        const baseR = 3 + ampAbs * 14;
+        const radius = baseR * (1 + tt * 1.4);
+        const isSharp = Math.abs(p.amp) > 20;
+        const hue = isSharp ? '160,20%,35%' : '220,20%,8%';
+        const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+        gr.addColorStop(0, `hsla(${hue},${alpha*0.55})`);
+        gr.addColorStop(0.5, `hsla(${hue},${alpha*0.2})`);
+        gr.addColorStop(1, `hsla(${hue},0)`);
+        ctx.fillStyle = gr;
+        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = `hsla(${hue},${alpha})`;
+        ctx.beginPath(); ctx.arc(cx, cy, Math.max(1.2, baseR*0.18*(1-tt)), 0, Math.PI*2); ctx.fill();
+      }
+    }
+    function burstStaticDraw() {
+      const { ctx, w, h } = prepCanvas(burstCanvas);
+      ctx.fillStyle = 'hsl(0 0% 97%)'; ctx.fillRect(0,0,w,h);
+      drawBurstGrid(ctx, w, h);
+      drawBurstParticles(ctx, w, h, 0);
+    }
+
+    let audioCtx = null, masterGain = null;
+    const pentatonicFreqs = [];
+    {
+      const colOffsets = [0, 2, 4, 7, 9, 12, 14, 16];
+      const rowBase = [72, 60, 48, 36];
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 8; c++) {
+        const midi = rowBase[r] + colOffsets[c];
+        pentatonicFreqs.push(440 * Math.pow(2, (midi - 69) / 12));
+      }
+    }
+    let voiceWindow = -1, voicesInWindow = 0;
+    function playSpikeSound(ch, amp, nowPlayback) {
+      if (!state.soundOn || !audioCtx) return;
+      const bucket = Math.floor(nowPlayback / 100);
+      if (bucket !== voiceWindow) { voiceWindow = bucket; voicesInWindow = 0; }
+      if (voicesInWindow >= 25) return;
+      voicesInWindow++;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.frequency.value = pentatonicFreqs[ch];
+      osc.type = Math.abs(amp) > 20 ? 'triangle' : 'sine';
+      const vol = Math.min(0.22, 0.05 + Math.abs(amp) / 50 * 0.18);
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(vol, now + 0.003);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+      osc.connect(g).connect(masterGain);
+      osc.start(now);
+      osc.stop(now + 0.1);
+    }
+    function initAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.5;
+      masterGain.connect(audioCtx.destination);
+    }
+    const soundBtn = document.getElementById('burst-sound');
+    soundBtn.addEventListener('click', () => {
+      state.soundOn = !state.soundOn;
+      if (state.soundOn) {
+        initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        soundBtn.textContent = '♪ sound on';
+        soundBtn.classList.add('sound-on');
+      } else {
+        soundBtn.textContent = '♪ sound off';
+        soundBtn.classList.remove('sound-on');
+      }
+    });
+
+    function burstStep(ts) {
+      if (!burstPlaying) return;
+      if (!burstStartT) burstStartT = ts;
+      const dtReal = ts - burstStartT;
+      burstElapsed += dtReal * burstSpeed;
+      burstStartT = ts;
+      const { ctx, w, h } = prepCanvas(burstCanvas);
+      ctx.fillStyle = 'hsla(0,0%,97%,0.35)';
+      ctx.fillRect(0,0,w,h);
+      drawBurstGrid(ctx, w, h);
+      while (burstSpikeCursor < burstSpikes.length && burstSpikes[burstSpikeCursor][0] <= burstElapsed) {
+        const s = burstSpikes[burstSpikeCursor++];
+        particles.push({ birth: burstElapsed, ch: s[1], amp: s[2] });
+        playSpikeSound(s[1], s[2], burstElapsed);
+      }
+      drawBurstParticles(ctx, w, h, burstElapsed);
+      ctx.fillStyle = FG_SOFT;
+      ctx.font = '10px "Space Mono", monospace';
+      ctx.fillText(`t = ${(burstElapsed/1000).toFixed(2)}s · spikes fired: ${fmt(burstSpikeCursor)} / ${fmt(burstSpikes.length)}`, 16, 20);
+      const frac = Math.min(burstElapsed / burstDuration, 1);
+      document.getElementById('burst-progress-fill').style.width = (frac*100) + '%';
+      document.getElementById('burst-time').textContent = `${(burstElapsed/1000).toFixed(1)}s / ${(burstDuration/1000).toFixed(1)}s`;
+      if (burstElapsed >= burstDuration) {
+        burstReset(true);
+        setTimeout(() => burstPlay(), 1200);
+        return;
+      }
+      burstFrame = requestAnimationFrame(burstStep);
+    }
+    function burstPlay() {
+      if (burstPlaying) return;
+      if (burstElapsed >= burstDuration) burstReset(false);
+      burstPlaying = true; burstStartT = 0;
+      document.getElementById('burst-play').textContent = '❚❚ pause';
+      if (state.soundOn && audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      burstFrame = requestAnimationFrame(burstStep);
+    }
+    function burstPause() {
+      burstPlaying = false;
+      if (burstFrame) cancelAnimationFrame(burstFrame);
+      document.getElementById('burst-play').textContent = '▶ play';
+    }
+    function burstReset(keepHud) {
+      burstPlaying = false;
+      if (burstFrame) cancelAnimationFrame(burstFrame);
+      burstElapsed = 0; burstSpikeCursor = 0; particles.length = 0;
+      document.getElementById('burst-play').textContent = '▶ play';
+      document.getElementById('burst-progress-fill').style.width = '0%';
+      document.getElementById('burst-time').textContent = `0.0s / ${(burstDuration/1000).toFixed(1)}s`;
+      if (!keepHud) burstStaticDraw();
+    }
+    document.getElementById('burst-play').addEventListener('click', () => {
+      if (burstPlaying) burstPause(); else burstPlay();
+    });
+    const speeds = [0.5, 1, 2, 4];
+    let speedIdx = 1;
+    document.getElementById('burst-speed').addEventListener('click', () => {
+      speedIdx = (speedIdx + 1) % speeds.length;
+      burstSpeed = speeds[speedIdx];
+      document.getElementById('burst-speed').textContent = `${burstSpeed}×`;
+    });
+    document.getElementById('burst-progress').addEventListener('click', (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const frac = (e.clientX - rect.left) / rect.width;
+      burstElapsed = burstDuration * frac;
+      burstSpikeCursor = 0; particles.length = 0;
+      while (burstSpikeCursor < burstSpikes.length && burstSpikes[burstSpikeCursor][0] <= burstElapsed) burstSpikeCursor++;
+      document.getElementById('burst-progress-fill').style.width = (frac*100) + '%';
+    });
+
+    /* ── 5. AMP ── */
+    function drawAmp() {
+      const canvas = document.getElementById('amp-canvas');
+      const { ctx, w, h } = prepCanvas(canvas);
+      ctx.fillStyle = 'hsl(0 0% 97%)'; ctx.fillRect(0,0,w,h);
+      const hist = state.selectedCh !== null
+        ? d.amp_hist.per_ch[state.selectedCh]
+        : d.amp_hist.total;
+      const min = d.amp_hist.min_uv, max = d.amp_hist.max_uv, n = d.amp_hist.nbins;
+      const maxV = Math.max(...hist) || 1;
+      const padX = 40, padY = 30;
+      const plotW = w - padX*2, plotH = h - padY*2;
+      const barW = plotW / n;
+      const zFrac = (0 - min) / (max - min);
+      const zx = padX + zFrac * plotW;
+      ctx.strokeStyle = TEAL; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(zx, padY-4); ctx.lineTo(zx, padY+plotH+6); ctx.stroke();
+      ctx.setLineDash([]);
+      const bars = [];
+      for (let i = 0; i < n; i++) {
+        const v = hist[i];
+        const bh = (v / maxV) * plotH;
+        const x = padX + i * barW;
+        const y = padY + plotH - bh;
+        const binCenter = min + (i + 0.5) * (max - min) / n;
+        const isNeg = binCenter < 0;
+        ctx.fillStyle = isNeg ? 'hsla(220,20%,8%,0.75)' : 'hsla(160,20%,35%,0.8)';
+        ctx.fillRect(x + 1, y, barW - 2, bh);
+        bars.push({ x: x + 1, y, w: barW - 2, h: bh, binCenter, v });
+      }
+      ctx.fillStyle = FG_SOFT;
+      ctx.font = '10px "Space Mono", monospace';
+      ctx.fillText('−60μV', padX, h - 8);
+      ctx.fillText('0', zx - 4, h - 8);
+      ctx.fillText('+60μV', padX + plotW - 30, h - 8);
+      ctx.fillText('depolarisation', padX + 6, padY + 12);
+      ctx.fillStyle = TEAL_SOFT;
+      ctx.fillText('repolarisation', padX + plotW - 80, padY + 12);
+      G.amp = { bars };
+      const totalSpikes = hist.reduce((a,b)=>a+b,0);
+      document.getElementById('amp-caption-left').textContent = state.selectedCh !== null
+        ? `ch${String(state.selectedCh).padStart(2,'0')} amplitude · ${fmt(totalSpikes)} events`
+        : `spike amplitude distribution · 2.6M events`;
+    }
+    (() => {
+      const canvas = document.getElementById('amp-canvas');
+      canvas.addEventListener('mousemove', (e) => {
+        if (!G.amp) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        for (const b of G.amp.bars) {
+          if (x >= b.x && x <= b.x + b.w) {
+            showTip(e, `<strong>${b.binCenter.toFixed(1)} μV</strong><br>${fmt(b.v)} spikes`);
+            return;
+          }
+        }
+        hideTip();
+      });
+      canvas.addEventListener('mouseleave', hideTip);
+    })();
+
+    function renderAll() {
+      drawTimeline(); drawRaster(); drawSpatial(); drawAmp();
+      updateFilterStrip();
+      if (!burstPlaying) burstStaticDraw();
+    }
+    renderAll();
+
+    let resizeT;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(renderAll, 120);
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && (state.filterBins || state.selectedCh !== null)) {
+        state.filterBins = null; state.selectedCh = null; renderAll();
+      }
+    });
+
+    window.__fs437Explainer.rerender = renderAll;
+  }
+};
+</script>
+
+<!-- ════════════ GLUE: lift-in + toggle + fetch summary ════════════ -->
+<script>
+(() => {
+  const startScreen = document.getElementById('start-screen');
+  const togglePill = document.getElementById('toggle-pill');
+  const tListen = document.getElementById('t-listen');
+  const tRead = document.getElementById('t-read');
+  const startHint = document.getElementById('start-hint');
+
+  let lifted = false;
+  let summaryLoaded = false;
+  let explainerInited = false;
+
+  function liftIn() {
+    if (lifted) return;
+    lifted = true;
+    startScreen.classList.add('lifted');
+    setTimeout(() => {
+      togglePill.classList.add('visible');
+      tRead.classList.add('pulse');
+      window.__fs437Room.initWhenLifted();
+    }, 700);
+  }
+
+  // Trigger lift-in on scroll OR click of the hint
+  let scrolled = false;
+  window.addEventListener('wheel', (e) => { if (!lifted && e.deltaY > 0) liftIn(); }, { passive: true });
+  window.addEventListener('touchmove', () => { if (!lifted) liftIn(); }, { passive: true });
+  window.addEventListener('keydown', (e) => {
+    if (!lifted && (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown' || e.key === 'Enter')) liftIn();
+  });
+  startHint.addEventListener('click', liftIn);
+
+  function setMode(mode) {
+    document.body.classList.remove('mode-listen', 'mode-read');
+    document.body.classList.add('mode-' + mode);
+    tListen.classList.toggle('active', mode === 'listen');
+    tRead.classList.toggle('active', mode === 'read');
+    if (mode === 'read') {
+      tRead.classList.remove('pulse');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }
+
+  tListen.addEventListener('click', () => setMode('listen'));
+  tRead.addEventListener('click', () => {
+    if (!summaryLoaded) return;
+    if (!explainerInited) {
+      window.__fs437Explainer.init();
+      explainerInited = true;
+    } else {
+      window.__fs437Explainer.rerender();
+    }
+    setMode('read');
+  });
+
+  // Fetch summary JSON for the explainer
+  fetch('data/fs437_summary.json')
+    .then(r => r.json())
+    .then(d => {
+      window.__fs437SummaryData = d;
+      summaryLoaded = true;
+    })
+    .catch(err => console.error('summary load failed', err));
+})();
+</script>
+
+</body>
+</html>

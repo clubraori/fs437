@@ -19,6 +19,11 @@
   --teal-soft: hsl(160 20% 35% / 0.55);
   --teal-faint: hsl(160 20% 35% / 0.15);
   --teal-bg: hsl(160 20% 35% / 0.08);
+  --night: hsl(36 8% 6%);
+  --night-soft: hsl(42 10% 12%);
+  --cream: hsl(42 35% 92%);
+  --cream-soft: hsl(42 35% 92% / 0.62);
+  --gold: hsl(43 45% 63%);
 }
 
 html, body {
@@ -38,10 +43,15 @@ body.mode-read { overflow: auto; }
 /* ═══════════ START SCREEN ═══════════ */
 #start-screen {
   position: fixed; inset: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 52% 42%, hsl(160 20% 35% / 0.22) 0%, transparent 30%),
+    radial-gradient(circle at 28% 72%, hsl(43 45% 63% / 0.12) 0%, transparent 28%),
+    linear-gradient(180deg, hsl(36 8% 5%) 0%, var(--night) 72%, hsl(42 10% 8%) 100%);
+  color: var(--cream);
   display: flex; align-items: center; justify-content: center;
   z-index: 100;
-  border-bottom: 1px solid #0a0f14;
+  overflow: hidden;
+  border-bottom: 1px solid hsl(42 30% 80% / 0.18);
   transition: transform 1.0s cubic-bezier(0.7, 0.0, 0.3, 1.0);
 }
 #start-screen.lifted { transform: translateY(-100%); }
@@ -50,40 +60,75 @@ body.mode-read { overflow: auto; }
   text-align: center;
   padding: 48px 64px;
   position: relative;
+  max-width: 1180px;
 }
 
 #start-frost {
   position: absolute; inset: -40%; z-index: -1;
-  background: radial-gradient(ellipse at center, hsla(0 0% 97% / 0.55) 0%, hsla(0 0% 97% / 0.3) 30%, hsla(0 0% 97% / 0) 55%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background:
+    radial-gradient(ellipse at center, hsl(42 35% 92% / 0.10) 0%, hsl(42 35% 92% / 0.04) 30%, transparent 56%),
+    repeating-linear-gradient(90deg, transparent 0 38px, hsl(42 35% 92% / 0.025) 38px 39px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   pointer-events: none;
+}
+
+#start-inner .start-kicker {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(43 45% 63% / 0.78);
+  margin-bottom: 24px;
 }
 
 #start-inner h1 {
   font-family: 'Host Grotesk', sans-serif;
-  font-size: clamp(144px, 18vw, 260px);
+  font-size: clamp(56px, 8vw, 118px);
   font-weight: 300;
-  letter-spacing: -0.02em;
-  color: var(--fg);
+  letter-spacing: 0;
+  color: hsl(42 35% 92% / 0.78);
   text-transform: lowercase;
   line-height: 1.0;
-  margin-bottom: 36px;
+  margin-bottom: 22px;
 }
 
 #start-inner h1 a {
-  color: var(--teal);
+  color: var(--gold);
   text-decoration: none;
   transition: color 0.3s;
 }
-#start-inner h1 a:hover { color: hsl(160 30% 45%); }
+#start-inner h1 a:hover { color: hsl(160 30% 62%); }
 
 #start-inner .start-desc {
   font-family: 'Host Grotesk', sans-serif;
-  font-size: clamp(24px, 3.2vw, 42px);
+  font-size: clamp(30px, 4.9vw, 68px);
   font-weight: 300;
-  color: hsla(220, 20%, 8%, 0.5);
-  margin: 0 auto 36px;
+  color: var(--cream);
+  max-width: 1040px;
+  line-height: 1.05;
+  margin: 0 auto 34px;
+}
+
+#start-inner .start-proof {
+  display: flex;
+  justify-content: center;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(42 35% 92% / 0.48);
+}
+#start-inner .start-proof span:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin-left: 18px;
+  vertical-align: middle;
+  background: hsl(43 45% 63% / 0.55);
 }
 
 #start-hint {
@@ -91,8 +136,8 @@ body.mode-read { overflow: auto; }
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: hsla(220, 20%, 8%, 0.45);
-  margin-top: 24px;
+  color: hsl(42 35% 92% / 0.5);
+  margin-top: 34px;
   cursor: pointer;
   user-select: none;
 }
@@ -115,7 +160,7 @@ body.mode-read { overflow: auto; }
 #start-footer .credit {
   font-family: 'Host Grotesk', sans-serif;
   font-size: 14px; font-weight: 300;
-  color: hsla(220, 20%, 8%, 0.3);
+  color: hsl(42 35% 92% / 0.34);
   letter-spacing: 0.04em;
 }
 #start-footer .credit a { color: inherit; text-decoration: none; }
@@ -159,7 +204,7 @@ body.mode-read { overflow: auto; }
 /* ═══════════ ROOM ═══════════ */
 #room {
   position: fixed; inset: 0;
-  background: var(--bg);
+  background: var(--night);
   z-index: 10;
   transition: opacity 0.6s ease;
 }
@@ -183,27 +228,41 @@ body.mode-read #room {
   font-size: 14px; font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: hsla(220, 20%, 8%, 0.85);
+  color: hsl(42 35% 92% / 0.88);
   line-height: 1.5;
 }
 #hud .hud-meta {
   margin-top: 6px;
   font-family: 'Space Mono', monospace;
   font-size: 11px; letter-spacing: 0.04em;
-  color: hsla(220, 20%, 8%, 0.6);
+  color: hsl(42 35% 92% / 0.58);
   line-height: 1.7;
 }
 #hud .hud-divider {
   margin: 12px 0 8px;
   width: 40px;
-  border-top: 1px solid hsla(220, 20%, 8%, 0.15);
+  border-top: 1px solid hsl(42 35% 92% / 0.16);
 }
 #hud .hud-time, #hud .hud-rate {
   font-family: 'Space Mono', monospace;
   font-size: 11px; letter-spacing: 0.04em;
-  color: hsla(220, 20%, 8%, 0.7);
+  color: hsl(42 35% 92% / 0.7);
   line-height: 1.8;
   font-variant-numeric: tabular-nums;
+}
+
+body.mode-listen #toggle-pill {
+  color: hsl(42 35% 92% / 0.55);
+}
+body.mode-listen #toggle-pill .dot {
+  color: hsl(42 35% 92% / 0.25);
+}
+body.mode-listen #toggle-pill .active {
+  color: var(--cream);
+  border-bottom-color: var(--cream);
+}
+body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
+  color: hsl(42 35% 92% / 0.85);
 }
 
 /* View toggle bottom-left */
@@ -213,15 +272,15 @@ body.mode-read #room {
   z-index: 20;
   font-family: 'Space Mono', monospace;
   font-size: 11px; letter-spacing: 0.06em;
-  display: flex; gap: 8px;
+  display: none; gap: 8px;
   opacity: 0;
   transition: opacity 0.6s ease;
 }
 #view-toggle.visible { opacity: 1; }
 .vt-btn {
   background: transparent;
-  border: 1px solid hsla(220, 20%, 8%, 0.15);
-  color: hsla(220, 20%, 8%, 0.55);
+  border: 1px solid hsl(42 35% 92% / 0.16);
+  color: hsl(42 35% 92% / 0.56);
   font-family: inherit; font-size: inherit; letter-spacing: inherit;
   padding: 5px 12px;
   cursor: pointer;
@@ -230,9 +289,9 @@ body.mode-read #room {
 }
 .vt-btn:hover { border-color: var(--teal); color: var(--teal); }
 .vt-btn.active {
-  background: var(--teal-bg);
-  border-color: var(--teal);
-  color: var(--teal);
+  background: hsl(160 20% 35% / 0.16);
+  border-color: hsl(160 28% 66% / 0.75);
+  color: hsl(160 28% 66%);
 }
 
 /* Transport bottom-center */
@@ -243,10 +302,10 @@ body.mode-read #room {
   z-index: 20;
   display: flex; align-items: center; gap: 18px;
   padding: 12px 20px;
-  background: hsla(0, 0%, 97%, 0.85);
+  background: hsl(36 8% 6% / 0.74);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid hsla(220, 20%, 8%, 0.08);
+  border: 1px solid hsl(42 35% 92% / 0.12);
   border-radius: 2px;
   max-width: 90vw; width: 700px;
   opacity: 0;
@@ -258,31 +317,31 @@ body.mode-read #room {
   font-size: 13px; font-weight: 400;
   letter-spacing: 0.04em;
   background: transparent;
-  color: var(--teal);
-  border: 1px solid hsla(160, 20%, 35%, 0.25);
+  color: hsl(160 28% 66%);
+  border: 1px solid hsl(160 28% 66% / 0.28);
   padding: 6px 14px;
   cursor: pointer;
   border-radius: 2px;
   transition: all 0.2s;
   white-space: nowrap;
 }
-#transport button:hover { border-color: var(--teal); background: hsla(160, 20%, 35%, 0.06); }
+#transport button:hover { border-color: hsl(160 28% 66%); background: hsl(160 28% 66% / 0.08); }
 #transport button.sound-on {
-  background: var(--teal);
-  color: var(--bg);
-  border-color: var(--teal);
+  background: hsl(160 28% 66%);
+  color: var(--night);
+  border-color: hsl(160 28% 66%);
 }
 #transport .t-time {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  color: hsla(220, 20%, 8%, 0.6);
+  color: hsl(42 35% 92% / 0.6);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 #transport .t-progress {
   flex: 1;
   height: 2px;
-  background: hsla(220, 20%, 8%, 0.1);
+  background: hsl(42 35% 92% / 0.14);
   position: relative;
   cursor: pointer;
   min-width: 100px;
@@ -308,7 +367,7 @@ body.mode-read #room {
   font-family: 'Space Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.08em;
-  color: hsla(220, 20%, 8%, 0.6);
+  color: hsl(42 35% 92% / 0.64);
   z-index: 25;
   pointer-events: none;
   transition: opacity 0.6s ease;
@@ -323,17 +382,17 @@ body.mode-read #room {
   transform: translateX(-50%);
   font-family: 'Host Grotesk', sans-serif;
   font-size: 14px; letter-spacing: 0.08em;
-  color: var(--teal);
+  color: hsl(160 28% 66%);
   cursor: pointer;
   padding: 8px 16px;
-  border-bottom: 1px solid hsla(160, 20%, 35%, 0.25);
+  border-bottom: 1px solid hsl(160 28% 66% / 0.3);
   z-index: 21;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
 }
 #end-replay.visible { opacity: 1; pointer-events: auto; }
-#end-replay:hover { border-bottom-color: var(--teal); }
+#end-replay:hover { border-bottom-color: hsl(160 28% 66%); }
 
 /* ═══════════ EXPLAINER ═══════════ */
 #explainer {
@@ -595,7 +654,10 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
   #view-toggle { bottom: 96px; left: 18px; }
   #transport { bottom: 18px; padding: 10px 14px; gap: 12px; }
   #transport button { padding: 5px 10px; font-size: 12px; }
-  #start-inner h1 { font-size: clamp(88px, 22vw, 140px); margin-bottom: 24px; }
+  #start-inner { padding: 36px 22px; }
+  #start-inner h1 { font-size: clamp(46px, 15vw, 88px); margin-bottom: 18px; }
+  #start-inner .start-proof { gap: 8px 12px; }
+  #start-inner .start-proof span:not(:last-child)::after { margin-left: 12px; }
 }
 </style>
 </head>
@@ -605,8 +667,10 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
 <div id="start-screen">
   <div id="start-inner">
     <div id="start-frost"></div>
+    <div class="start-kicker">fs437 · finalspark neuroplatform · recorded June 2025</div>
     <h1>fs437<a href="https://tentatively725.com" target="_blank" rel="noopener">*</a></h1>
-    <div class="start-desc">five days of a living mind</div>
+    <div class="start-desc">Thirty-two electrodes become light, sound, and synthetic motion; five days of activity become a chamber you can enter.</div>
+    <div class="start-proof"><span>2.6M spike events</span><span>118 hours</span><span>32 channels</span></div>
     <div id="start-hint">scroll to enter<span class="arrow">↓</span></div>
   </div>
   <div id="start-footer">
@@ -628,8 +692,8 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
     <canvas id="three-canvas"></canvas>
 
     <div id="hud">
-      <div class="hud-title">THE ROOM</div>
-      <div class="hud-meta">fs437 · 32 channels</div>
+      <div class="hud-title">SPATIAL INSTRUMENT</div>
+      <div class="hud-meta">not a simulation · 32 listening posts</div>
       <div class="hud-divider"></div>
       <div class="hud-time" id="hud-time">t = —</div>
       <div class="hud-rate" id="hud-rate">rate = —</div>
@@ -642,7 +706,7 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
 
     <div id="transport">
       <button id="room-play">▶ play</button>
-      <button id="room-sound">♪ sound off</button>
+      <button id="room-sound">♪ sound on</button>
       <span class="t-time" id="room-time">day 0.00 / 4.93</span>
       <div class="t-progress" id="room-progress"><div class="t-progress-fill" id="room-progress-fill"></div></div>
       <button id="room-speed">1×</button>
@@ -669,8 +733,8 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
     <div class="wrap">
       <header class="hero">
         <div class="eyebrow">tentatively725 · experiment 004</div>
-        <h1>fs437 &mdash; five days of a <em>living mind</em>.</h1>
-        <p class="sub">A human brain organoid, grown from stem cells in Vevey, Switzerland, sitting on a 32&#8209;electrode array. No body. No senses. No task. Just 118 hours of neurons firing at each other, rehearsing for a world that will never arrive.</p>
+        <h1>fs437 &mdash; an <em>instrument</em> made from spikes.</h1>
+        <p class="sub">Not a simulation of a brain, but a translation of a recording: a human brain organoid in Vevey, Switzerland, heard through a 32&#8209;electrode array for 118 hours. No body. No senses. No task. Just signal, timing, amplitude, and the strange intimacy of listening.</p>
       </header>
     </div>
 
@@ -737,7 +801,7 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
         <canvas id="burst-canvas" class="viz" height="440"></canvas>
         <div class="player">
           <button id="burst-play">▶ play</button>
-          <button id="burst-sound">♪ sound off</button>
+          <button id="burst-sound">♪ sound on</button>
           <div class="time" id="burst-time">0.0s / 60.0s</div>
           <div class="progress" id="burst-progress"><div class="progress-fill" id="burst-progress-fill"></div></div>
           <div class="speed" id="burst-speed">1×</div>
@@ -797,6 +861,14 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+window.__fs437ModuleStarted = true;
+window.addEventListener('error', (e) => {
+  window.__fs437LastError = `${e.message || 'error'} @ ${e.filename || ''}:${e.lineno || ''}`;
+});
+window.addEventListener('unhandledrejection', (e) => {
+  window.__fs437LastError = e.reason && e.reason.message ? e.reason.message : String(e.reason);
+});
+
 const ROWS = 4, COLS = 8, N_CH = ROWS * COLS;
 const SPACING = 1.7;
 
@@ -823,21 +895,85 @@ function buildHaloTexture() {
   return tex;
 }
 
+function buildFogTexture() {
+  const size = 256;
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const img = ctx.createImageData(size, size);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = (x - size / 2) / (size / 2);
+      const dy = (y - size / 2) / (size / 2);
+      const r = Math.sqrt(dx * dx + dy * dy);
+      const falloff = Math.max(0, 1 - r);
+      const grain = 0.72 + 0.28 * Math.sin(x * 0.17 + y * 0.11) * Math.sin(x * 0.031 + y * 0.047);
+      const alpha = Math.pow(falloff, 2.7) * grain * 105;
+      const i = (y * size + x) * 4;
+      img.data[i] = 232;
+      img.data[i + 1] = 238;
+      img.data[i + 2] = 224;
+      img.data[i + 3] = alpha;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  return tex;
+}
+
+function buildBeamTexture() {
+  const w = 128, h = 512;
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  const img = ctx.createImageData(w, h);
+  for (let y = 0; y < h; y++) {
+    const vy = y / (h - 1);
+    const baseGlow = Math.pow(vy, 1.45);
+    const bodyGlow = Math.sin(vy * Math.PI);
+    const vertical = 0.1 + baseGlow * 0.24 + bodyGlow * 0.82;
+    for (let x = 0; x < w; x++) {
+      const dx = (x / (w - 1)) * 2 - 1;
+      const core = Math.exp(-dx * dx * 9.5);
+      const edge = Math.exp(-dx * dx * 1.35) * 0.18;
+      const filament = 0.82 + 0.18 * Math.sin(x * 0.22 + y * 0.045) * Math.sin(y * 0.019);
+      const alpha = Math.min(132, (core + edge) * vertical * filament * 92);
+      const i = (y * w + x) * 4;
+      img.data[i] = 214;
+      img.data[i + 1] = 244;
+      img.data[i + 2] = 226;
+      img.data[i + 3] = alpha;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  return tex;
+}
+
 // === Scene setup ===
 const canvas = document.getElementById('three-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x0b0907, 1);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf7f7f7);
+scene.background = new THREE.Color(0x0a0907);
+scene.fog = new THREE.FogExp2(0x11100d, 0.075);
 
-const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 200);
+const ambient = new THREE.HemisphereLight(0xd8c8a6, 0x12100d, 0.34);
+scene.add(ambient);
 
-// Top-down anchor: high y, slight horizontal jitter for drift
-const TOPDOWN_Y = 18;
-const FLOAT_INITIAL = new THREE.Vector3(9, 5, 11);
+const camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 200);
 
+// Top-down anchor: true overhead, so the room reads as an instrument panel.
+const TOPDOWN_Y = 36;
 camera.position.set(0, TOPDOWN_Y, 0.0001);
 camera.lookAt(0, 0, 0);
 
@@ -845,70 +981,555 @@ camera.lookAt(0, 0, 0);
 const haloTex = buildHaloTexture();
 const sprites = [];
 const electrodePos = new Array(N_CH);
+const channelEnergy = new Float32Array(N_CH);
+const lightPads = [];
+const padGeo = new THREE.PlaneGeometry(0.22, 0.22);
+const WALL_COLS = COLS / 2;
+const TUNNEL_WALL_X = 1.95;
+const TUNNEL_Z_STEP = 2.35;
+const TUNNEL_Y_STEP = 1.08;
+const TUNNEL_Y_MIN = 0.92;
+const TUNNEL_Z_MIN = -((WALL_COLS - 1) * TUNNEL_Z_STEP) / 2;
+const wallNormal = new THREE.Vector3();
+const planeNormal = new THREE.Vector3(0, 0, 1);
+function channelWallPosition(r, c) {
+  const side = c < WALL_COLS ? -1 : 1;
+  const wallCol = c % WALL_COLS;
+  const x = side * TUNNEL_WALL_X;
+  const y = TUNNEL_Y_MIN + (ROWS - 1 - r) * TUNNEL_Y_STEP;
+  const z = TUNNEL_Z_MIN + wallCol * TUNNEL_Z_STEP;
+  const targetY = Math.max(0.95, y - 0.22);
+  const targetZ = z + 1.05;
+  const inward = -side;
+  const dir = new THREE.Vector3(inward, -0.045, 0.32).normalize();
+  return { x, y, z, side, inward, targetX: 0, targetY, targetZ, dir };
+}
 for (let r = 0; r < ROWS; r++) {
   for (let c = 0; c < COLS; c++) {
     const ch = r * COLS + c;
-    const x = (c - (COLS - 1) / 2) * SPACING;
-    const z = (r - (ROWS - 1) / 2) * SPACING;
-    electrodePos[ch] = { x, y: 0, z };
+    const pos = channelWallPosition(r, c);
+    const { x, y, z } = pos;
+    electrodePos[ch] = pos;
 
     const mat = new THREE.SpriteMaterial({
       map: haloTex,
       color: 0xffffff,
       transparent: true,
       depthWrite: false,
+      blending: THREE.AdditiveBlending,
       opacity: 0.65,
     });
     const s = new THREE.Sprite(mat);
-    s.position.set(x, 0, z);
-    s.scale.set(1.5, 1.5, 1.5);
+    s.position.set(x + pos.inward * 0.05, y, z);
+    s.scale.set(0.18, 0.18, 0.18);
     scene.add(s);
-    sprites.push({ sprite: s, mat, ch, pulse: 0, baseScale: 1.5 });
+    sprites.push({ sprite: s, mat, ch, pulse: 0, baseScale: 0.18 });
+
+    const padMat = new THREE.MeshBasicMaterial({
+      color: ch % 5 === 0 ? 0xd7b56d : 0x86d9bd,
+      transparent: true,
+      opacity: 0.045,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+    });
+    const pad = new THREE.Mesh(padGeo, padMat);
+    wallNormal.set(pos.inward, 0, 0);
+    pad.quaternion.setFromUnitVectors(planeNormal, wallNormal);
+    pad.position.set(x + pos.inward * 0.018, y, z);
+    scene.add(pad);
+    lightPads.push({ mesh: pad, mat: padMat });
   }
 }
 
+// Spotlight chamber: 32 listening posts, not 32 neurons.
+const spotBeams = [];
+const beamShafts = [];
+const aisleShafts = [];
+const spotHeads = [];
+const BEAM_HEIGHT = 5.4;
+const BEAM_LENGTH = 2.65;
+const BEAM_RADIUS = 0.48;
+const beamGeo = new THREE.ConeGeometry(BEAM_RADIUS, BEAM_LENGTH, 48, 1, true);
+const beamCoreGeo = new THREE.ConeGeometry(BEAM_RADIUS * 0.38, BEAM_LENGTH * 0.96, 40, 1, true);
+const headGeo = new THREE.BoxGeometry(0.34, 0.08, 0.34);
+const beamTex = buildBeamTexture();
+const chamberTeal = new THREE.Color(0x86d9bd);
+const chamberGold = new THREE.Color(0xd7b56d);
+const coneSourceAxis = new THREE.Vector3(0, -1, 0);
+function orientBeamFromWall(mesh, pos, length = BEAM_LENGTH) {
+  const source = new THREE.Vector3(pos.x, pos.y, pos.z);
+  const dir = pos.dir || new THREE.Vector3(pos.inward, -0.045, 0.32).normalize();
+  mesh.position.copy(source).addScaledVector(dir, length * 0.5);
+  mesh.quaternion.setFromUnitVectors(coneSourceAxis, dir);
+}
+for (let ch = 0; ch < N_CH; ch++) {
+  const pos = electrodePos[ch];
+  const accent = ch % 5 === 0 ? chamberGold : chamberTeal;
+
+  const beamMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    transparent: true,
+    opacity: 0.02,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+  });
+  const beam = new THREE.Mesh(beamGeo, beamMat);
+  orientBeamFromWall(beam, pos);
+  scene.add(beam);
+
+  const coreMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    transparent: true,
+    opacity: 0.012,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+  });
+  const core = new THREE.Mesh(beamCoreGeo, coreMat);
+  orientBeamFromWall(core, pos, BEAM_LENGTH * 0.96);
+  scene.add(core);
+  spotBeams.push({ mesh: beam, mat: beamMat, core, coreMat });
+
+  const shaftMat = new THREE.SpriteMaterial({
+    map: beamTex,
+    color: accent,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const shaft = new THREE.Sprite(shaftMat);
+  shaft.position.set(
+    pos.x + pos.dir.x * BEAM_LENGTH * 0.5,
+    pos.y + pos.dir.y * BEAM_LENGTH * 0.5,
+    pos.z + pos.dir.z * BEAM_LENGTH * 0.5
+  );
+  shaft.scale.set(BEAM_LENGTH * 0.76, 1.1, 1);
+  scene.add(shaft);
+  beamShafts.push({ sprite: shaft, mat: shaftMat });
+
+  const headMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    transparent: true,
+    opacity: 0.16,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const head = new THREE.Mesh(headGeo, headMat);
+  head.quaternion.setFromUnitVectors(planeNormal, wallNormal.set(pos.inward, 0, 0));
+  head.position.set(pos.x + pos.inward * 0.055, pos.y, pos.z);
+  scene.add(head);
+
+  const headGlowMat = new THREE.SpriteMaterial({
+    map: haloTex,
+    color: accent,
+    transparent: true,
+    opacity: 0.11,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const headGlow = new THREE.Sprite(headGlowMat);
+  headGlow.position.set(pos.x + pos.inward * 0.075, pos.y, pos.z);
+  headGlow.scale.set(0.12, 0.12, 1);
+  scene.add(headGlow);
+  spotHeads.push({ head, mat: headMat, glow: headGlow, glowMat: headGlowMat });
+}
+
+for (let i = 0; i < 7; i++) {
+  const z = -4.2 + i * 1.4;
+  const mat = new THREE.SpriteMaterial({
+    map: beamTex,
+    color: 0x9ccbb6,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const shaft = new THREE.Sprite(mat);
+  shaft.position.set(0, BEAM_HEIGHT / 2 - 0.08, z);
+  shaft.scale.set(1.05, BEAM_HEIGHT * 0.95, 1);
+  scene.add(shaft);
+  aisleShafts.push({ sprite: shaft, mat, phase: i * 0.83 });
+}
+
 // Faint floor grid (so the room reads as 3D)
-const gridSize = SPACING * COLS + 2;
-const grid = new THREE.GridHelper(gridSize, 16, 0x000000, 0x000000);
-grid.material.opacity = 0.04;
+const gridSize = TUNNEL_WALL_X * 2 + 2.4;
+const chamberFloor = new THREE.Mesh(
+  new THREE.CircleGeometry(gridSize * 0.58, 96),
+  new THREE.MeshBasicMaterial({
+    color: 0x4c725f,
+    transparent: true,
+    opacity: 0.045,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  })
+);
+chamberFloor.rotation.x = -Math.PI / 2;
+chamberFloor.position.y = -0.025;
+scene.add(chamberFloor);
+
+const grid = new THREE.GridHelper(gridSize, 16, 0xd8ceb3, 0xd8ceb3);
+grid.material.opacity = 0.075;
 grid.material.transparent = true;
 grid.position.y = -0.02;
 scene.add(grid);
 
-// === OrbitControls for float ===
+const perspectiveGrid = new THREE.GridHelper(gridSize * 1.45, 28, 0x9fbfae, 0x55685c);
+perspectiveGrid.material.opacity = 0;
+perspectiveGrid.material.transparent = true;
+perspectiveGrid.position.y = -0.018;
+scene.add(perspectiveGrid);
+
+const structureLinePositions = [];
+const floorZMin = TUNNEL_Z_MIN - 2.45, floorZMax = -TUNNEL_Z_MIN + 2.45;
+const floorXMin = -TUNNEL_WALL_X;
+const floorXMax = TUNNEL_WALL_X;
+const wallYMin = 0.45;
+const wallYMax = TUNNEL_Y_MIN + (ROWS - 1) * TUNNEL_Y_STEP + 0.58;
+const aisleFloor = new THREE.Mesh(
+  new THREE.PlaneGeometry(SPACING * 1.12, floorZMax - floorZMin),
+  new THREE.MeshBasicMaterial({
+    color: 0x87d8be,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+  })
+);
+aisleFloor.rotation.x = -Math.PI / 2;
+aisleFloor.position.y = 0.012;
+scene.add(aisleFloor);
+
+const wallPlaneMat = new THREE.MeshBasicMaterial({
+  color: 0x6fa691,
+  transparent: true,
+  opacity: 0.028,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+  side: THREE.DoubleSide,
+});
+for (const side of [-1, 1]) {
+  const wall = new THREE.Mesh(
+    new THREE.PlaneGeometry(floorZMax - floorZMin, wallYMax - wallYMin),
+    wallPlaneMat
+  );
+  wall.rotation.y = side < 0 ? Math.PI / 2 : -Math.PI / 2;
+  wall.position.set(side * TUNNEL_WALL_X, (wallYMin + wallYMax) / 2, (floorZMin + floorZMax) / 2);
+  scene.add(wall);
+}
+
+for (let c = 0; c < WALL_COLS; c++) {
+  const z = TUNNEL_Z_MIN + c * TUNNEL_Z_STEP;
+  structureLinePositions.push(floorXMin, 0.035, z, floorXMax, 0.035, z);
+  for (const side of [-1, 1]) {
+    structureLinePositions.push(side * TUNNEL_WALL_X, wallYMin, z, side * TUNNEL_WALL_X, wallYMax, z);
+  }
+}
+for (let r = 0; r < ROWS; r++) {
+  const y = TUNNEL_Y_MIN + r * TUNNEL_Y_STEP;
+  for (const side of [-1, 1]) {
+    structureLinePositions.push(side * TUNNEL_WALL_X, y, floorZMin, side * TUNNEL_WALL_X, y, floorZMax);
+  }
+}
+structureLinePositions.push(-SPACING / 2, 0.05, floorZMin, -SPACING / 2, 0.05, floorZMax);
+structureLinePositions.push(SPACING / 2, 0.05, floorZMin, SPACING / 2, 0.05, floorZMax);
+structureLinePositions.push(floorXMin, wallYMin, floorZMin, floorXMin, wallYMin, floorZMax);
+structureLinePositions.push(floorXMax, wallYMin, floorZMin, floorXMax, wallYMin, floorZMax);
+const structureLineGeo = new THREE.BufferGeometry();
+structureLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(structureLinePositions, 3));
+const structureLineMat = new THREE.LineBasicMaterial({
+  color: 0xaad5c2,
+  transparent: true,
+  opacity: 0,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const structureLines = new THREE.LineSegments(structureLineGeo, structureLineMat);
+scene.add(structureLines);
+
+const beamGuides = [];
+for (let ch = 0; ch < N_CH; ch++) {
+  const pos = electrodePos[ch];
+  const source = new THREE.Vector3(pos.x, pos.y, pos.z);
+  const target = source.clone().addScaledVector(pos.dir, BEAM_LENGTH);
+  const spread = 0.42;
+  const guidePositions = [
+    source.x, source.y, source.z, target.x, target.y, target.z,
+    source.x, source.y, source.z, target.x, target.y + spread, target.z - spread,
+    source.x, source.y, source.z, target.x, target.y - spread, target.z - spread,
+    source.x, source.y, source.z, target.x, target.y + spread, target.z + spread,
+    source.x, source.y, source.z, target.x, target.y - spread, target.z + spread,
+  ];
+  const guideGeo = new THREE.BufferGeometry();
+  guideGeo.setAttribute('position', new THREE.Float32BufferAttribute(guidePositions, 3));
+  const guideMat = new THREE.LineBasicMaterial({
+    color: ch % 5 === 0 ? 0xd7b56d : 0x86d9bd,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const guide = new THREE.LineSegments(guideGeo, guideMat);
+  scene.add(guide);
+  beamGuides.push({ line: guide, mat: guideMat });
+}
+
+const rigLinePositions = [];
+const rigTopY = wallYMax;
+const rigLowY = 0.09;
+const portalTopY = wallYMax;
+const aisleLeft = -SPACING / 2;
+const aisleRight = SPACING / 2;
+const rowZs = [];
+const colXs = [];
+for (let c = 0; c < WALL_COLS; c++) rowZs.push(TUNNEL_Z_MIN + c * TUNNEL_Z_STEP);
+colXs.push(-TUNNEL_WALL_X, TUNNEL_WALL_X, aisleLeft, aisleRight);
+
+for (const z of rowZs) {
+  rigLinePositions.push(floorXMin, rigTopY, z, floorXMax, rigTopY, z);
+  rigLinePositions.push(aisleLeft, rigLowY, z, aisleLeft, portalTopY, z);
+  rigLinePositions.push(aisleRight, rigLowY, z, aisleRight, portalTopY, z);
+  rigLinePositions.push(aisleLeft, portalTopY, z, aisleRight, portalTopY, z);
+}
+for (const x of colXs) {
+  rigLinePositions.push(x, rigTopY, floorZMin, x, rigTopY, floorZMax);
+}
+rigLinePositions.push(aisleLeft, rigLowY, floorZMin, aisleLeft, rigLowY, floorZMax);
+rigLinePositions.push(aisleRight, rigLowY, floorZMin, aisleRight, rigLowY, floorZMax);
+rigLinePositions.push(aisleLeft, portalTopY, floorZMin, aisleLeft, portalTopY, floorZMax);
+rigLinePositions.push(aisleRight, portalTopY, floorZMin, aisleRight, portalTopY, floorZMax);
+
+const rigLineGeo = new THREE.BufferGeometry();
+rigLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(rigLinePositions, 3));
+const rigLineMat = new THREE.LineBasicMaterial({
+  color: 0xc7e5d4,
+  transparent: true,
+  opacity: 0,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const rigLines = new THREE.LineSegments(rigLineGeo, rigLineMat);
+scene.add(rigLines);
+
+// Synthetic-organic agent layer: local activity tugs the field around each electrode.
+const AGENT_COUNT = 1100;
+const agentPositions = new Float32Array(AGENT_COUNT * 3);
+const agentColors = new Float32Array(AGENT_COUNT * 3);
+const agentSeeds = [];
+function seeded(i) {
+  const x = Math.sin(i * 127.1 + 17.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+for (let i = 0; i < AGENT_COUNT; i++) {
+  const ch = Math.floor(seeded(i) * N_CH);
+  const row = Math.floor(ch / COLS);
+  agentSeeds.push({
+    ch,
+    radius: 0.28 + seeded(i + 91) * 0.82,
+    height: 0.18 + seeded(i + 211) * 2.7,
+    phase: seeded(i + 37) * Math.PI * 2,
+    speed: 0.24 + seeded(i + 53) * 0.78,
+    rowBias: (row - 1.5) * 0.05,
+  });
+}
+const agentGeo = new THREE.BufferGeometry();
+agentGeo.setAttribute('position', new THREE.BufferAttribute(agentPositions, 3));
+agentGeo.setAttribute('color', new THREE.BufferAttribute(agentColors, 3));
+const agentMat = new THREE.PointsMaterial({
+  map: haloTex,
+  size: 0.055,
+  sizeAttenuation: true,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.86,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const agentField = new THREE.Points(agentGeo, agentMat);
+scene.add(agentField);
+
+const STRAND_COUNT = 132;
+const strandPositions = new Float32Array(STRAND_COUNT * 2 * 3);
+const strandGeo = new THREE.BufferGeometry();
+strandGeo.setAttribute('position', new THREE.BufferAttribute(strandPositions, 3));
+const strandMat = new THREE.LineBasicMaterial({
+  color: 0x86d9bd,
+  transparent: true,
+  opacity: 0.045,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const strands = new THREE.LineSegments(strandGeo, strandMat);
+scene.add(strands);
+
+const HAZE_COUNT = 3200;
+const hazePositions = new Float32Array(HAZE_COUNT * 3);
+const hazeColors = new Float32Array(HAZE_COUNT * 3);
+const hazeSeeds = [];
+for (let i = 0; i < HAZE_COUNT; i++) {
+  const ch = Math.floor(seeded(i + 811) * N_CH);
+  const y = 0.16 + seeded(i + 929) * (BEAM_HEIGHT - 0.75);
+  const radiusAtY = BEAM_RADIUS * (0.12 + (y / BEAM_HEIGHT) * 0.96);
+  hazeSeeds.push({
+    ch,
+    y,
+    radial: Math.sqrt(seeded(i + 1049)) * radiusAtY,
+    theta: seeded(i + 1171) * Math.PI * 2,
+    drift: 0.05 + seeded(i + 1291) * 0.22,
+    phase: seeded(i + 1423) * Math.PI * 2,
+    warmth: seeded(i + 1531),
+  });
+}
+const hazeGeo = new THREE.BufferGeometry();
+hazeGeo.setAttribute('position', new THREE.BufferAttribute(hazePositions, 3));
+hazeGeo.setAttribute('color', new THREE.BufferAttribute(hazeColors, 3));
+const hazeMat = new THREE.PointsMaterial({
+  map: haloTex,
+  size: 0.035,
+  sizeAttenuation: true,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.95,
+  depthTest: false,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const hazeField = new THREE.Points(hazeGeo, hazeMat);
+scene.add(hazeField);
+
+const TYNDALL_STREAKS = 300;
+const tyndallPositions = new Float32Array(TYNDALL_STREAKS * 2 * 3);
+const tyndallSeeds = [];
+for (let i = 0; i < TYNDALL_STREAKS; i++) {
+  tyndallSeeds.push({
+    ch: Math.floor(seeded(i + 2741) * N_CH),
+    y: seeded(i + 2861) * (BEAM_HEIGHT - 0.55),
+    theta: seeded(i + 2957) * Math.PI * 2,
+    radial: Math.sqrt(seeded(i + 3067)) * BEAM_RADIUS,
+    speed: 0.16 + seeded(i + 3181) * 0.42,
+    length: 0.08 + seeded(i + 3299) * 0.24,
+    phase: seeded(i + 3413) * Math.PI * 2,
+  });
+}
+const tyndallGeo = new THREE.BufferGeometry();
+tyndallGeo.setAttribute('position', new THREE.BufferAttribute(tyndallPositions, 3));
+const tyndallMat = new THREE.LineBasicMaterial({
+  color: 0xd7f5e8,
+  transparent: true,
+  opacity: 0,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const tyndallLines = new THREE.LineSegments(tyndallGeo, tyndallMat);
+scene.add(tyndallLines);
+
+const fogTex = buildFogTexture();
+const fogSheets = [];
+const FOG_SHEET_COUNT = 20;
+for (let i = 0; i < FOG_SHEET_COUNT; i++) {
+  const baseX = -1.9 + seeded(i + 1703) * 3.8;
+  const baseY = 0.85 + seeded(i + 1811) * 4.8;
+  const baseZ = -3.5 + seeded(i + 1933) * 7;
+  const mat = new THREE.SpriteMaterial({
+    map: fogTex,
+    color: seeded(i + 2053) > 0.72 ? 0xd7c58d : 0x9ccbb6,
+    transparent: true,
+    opacity: 0.08,
+    depthTest: false,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const sprite = new THREE.Sprite(mat);
+  sprite.position.set(baseX, baseY, baseZ);
+  const w = 3.1 + seeded(i + 2179) * 3.4;
+  const h = 1.3 + seeded(i + 2297) * 2.2;
+  sprite.scale.set(w, h, 1);
+  scene.add(sprite);
+  fogSheets.push({
+    sprite,
+    mat,
+    baseX,
+    baseY,
+    baseZ,
+    width: w,
+    height: h,
+    phase: seeded(i + 2411) * Math.PI * 2,
+    drift: 0.05 + seeded(i + 2531) * 0.13,
+    opacity: 0.07 + seeded(i + 2657) * 0.06,
+  });
+}
+
+// === View camera ===
 const controls = new OrbitControls(camera, canvas);
 controls.enabled = false;
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.minDistance = 4;
-controls.maxDistance = 40;
+controls.maxDistance = 70;
 controls.target.set(0, 0, 0);
 controls.enablePan = false;
 
-// === View mode state ===
-let viewMode = 'topdown'; // or 'float'
-let driftAngle = 0;
+// === Scroll journey state ===
+let viewMode = 'float'; // legacy name; the room is now one continuous descent.
 let tween = null; // { from, to, fromTarget, toTarget, start, dur }
+let journeyProgress = 0;
+let journeyTarget = 0;
+let lastTouchY = null;
 
 const TWEEN_DUR = 900;
-function setViewMode(mode) {
-  if (mode === viewMode) return;
-  const fromPos = camera.position.clone();
-  let toPos, toTarget;
-  if (mode === 'topdown') {
-    toPos = new THREE.Vector3(0, TOPDOWN_Y, 0.0001);
-    toTarget = new THREE.Vector3(0, 0, 0);
-  } else {
-    toPos = FLOAT_INITIAL.clone();
-    toTarget = new THREE.Vector3(0, 0, 0);
-  }
-  const fromTarget = controls.target.clone();
-  tween = { from: fromPos, to: toPos, fromTarget, toTarget, start: performance.now(), dur: TWEEN_DUR };
-  viewMode = mode;
-  controls.enabled = false;
-  document.getElementById('vt-topdown').classList.toggle('active', mode === 'topdown');
-  document.getElementById('vt-float').classList.toggle('active', mode === 'float');
+const JOURNEY_MIN = 0;
+const JOURNEY_MAX = 1;
+function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+function clampJourney(v) { return Math.max(JOURNEY_MIN, Math.min(JOURNEY_MAX, v)); }
+function smoothstep(edge0, edge1, x) {
+  const t = clamp01((x - edge0) / (edge1 - edge0));
+  return t * t * (3 - 2 * t);
 }
+function mix(a, b, t) { return a + (b - a) * t; }
+function journeyImmersion() { return smoothstep(0.12, 0.52, journeyProgress); }
+function getJourney(progress) {
+  const p = clampJourney(progress);
+  const descent = smoothstep(0.12, 0.52, p);
+  const travel = smoothstep(0.3, 1, p);
+  const lookTravel = smoothstep(0.3, 1, clampJourney(p + 0.16));
+
+  const topPos = new THREE.Vector3(0, mix(TOPDOWN_Y, 13.5, smoothstep(0, 0.36, p)), 0.0001);
+  const topTarget = new THREE.Vector3(0, 0, 0);
+
+  const corridorZ = THREE.MathUtils.lerp(floorZMax + 1.7, TUNNEL_Z_MIN + 1.25, travel);
+  const corridorX = Math.sin(travel * Math.PI * 1.15) * 0.18;
+  const corridorY = 1.55 + Math.sin(travel * Math.PI) * 0.18;
+  const lookZ = THREE.MathUtils.lerp(floorZMax - 0.25, TUNNEL_Z_MIN - 0.3, lookTravel);
+  const lookX = Math.sin(lookTravel * Math.PI * 1.15) * 0.12;
+  const lookY = 1.5 + Math.sin(lookTravel * Math.PI) * 0.12;
+
+  const pos = topPos.lerp(new THREE.Vector3(corridorX, corridorY, corridorZ), descent);
+  const target = topTarget.lerp(new THREE.Vector3(lookX, lookY, lookZ), descent);
+  return {
+    pos,
+    target,
+  };
+}
+function setJourneyTarget(delta) {
+  journeyTarget = clampJourney(journeyTarget + delta);
+}
+function setViewMode(mode) {
+  journeyTarget = mode === 'topdown' ? 0 : Math.max(journeyTarget, 0.34);
+  viewMode = 'float';
+  tween = null;
+  controls.enabled = false;
+}
+window.__fs437SetViewMode = setViewMode;
+window.__fs437JourneyState = () => ({
+  viewMode,
+  journeyProgress,
+  journeyTarget,
+  immersion: journeyImmersion(),
+  camera: camera.position.toArray(),
+});
 
 function tweenUpdate(now) {
   if (!tween) return false;
@@ -919,12 +1540,48 @@ function tweenUpdate(now) {
   camera.lookAt(tgt);
   if (t >= 1) {
     controls.target.copy(tween.toTarget);
-    if (viewMode === 'float') controls.enabled = true;
     tween = null;
     return false;
   }
   return true;
 }
+
+function updateJourneyCamera() {
+  journeyProgress += (journeyTarget - journeyProgress) * 0.075;
+  const journey = getJourney(journeyProgress);
+  camera.position.copy(journey.pos);
+  camera.lookAt(journey.target);
+  controls.target.copy(journey.target);
+}
+
+function canDriveJourney() {
+  return document.body.classList.contains('mode-listen') &&
+    document.getElementById('start-screen').classList.contains('lifted');
+}
+
+window.addEventListener('wheel', (e) => {
+  if (!canDriveJourney()) return;
+  e.preventDefault();
+  setJourneyTarget(e.deltaY * 0.00042);
+}, { passive: false });
+
+window.addEventListener('touchstart', (e) => {
+  if (!canDriveJourney() || !e.touches.length) return;
+  lastTouchY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  if (!canDriveJourney() || !e.touches.length || lastTouchY === null) return;
+  const y = e.touches[0].clientY;
+  setJourneyTarget((lastTouchY - y) * 0.0011);
+  lastTouchY = y;
+}, { passive: true });
+
+window.addEventListener('keydown', (e) => {
+  if (!canDriveJourney()) return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') setJourneyTarget(0.055);
+  if (e.key === 'ArrowUp' || e.key === 'PageUp') setJourneyTarget(-0.055);
+});
 
 // === Audio ===
 let audioCtx = null;
@@ -1013,6 +1670,182 @@ function updateAudioListener() {
   }
 }
 
+// === Chamber field ===
+let globalBloom = 0;
+function updateChamber(now, dt) {
+  const t = now * 0.001;
+  globalBloom = Math.max(0, globalBloom - dt * 0.78);
+  const bloom = Math.min(1, globalBloom);
+  const immersion = journeyImmersion();
+  const tyndall = smoothstep(0.2, 0.72, journeyProgress);
+
+  chamberFloor.material.opacity = mix(0.045, 0.095, immersion) + bloom * 0.06;
+  aisleFloor.material.opacity = mix(0.018, 0.092, immersion) + bloom * 0.025;
+  grid.material.opacity = mix(0.075, 0.17, immersion);
+  perspectiveGrid.material.opacity = mix(0, 0.14, immersion);
+  structureLineMat.opacity = mix(0.11, 0.3, immersion);
+  rigLineMat.opacity = mix(0.018, 0.16, immersion) + bloom * 0.04;
+  strandMat.opacity = mix(0.035, 0.07, tyndall) + bloom * 0.035;
+  agentMat.opacity = mix(0.32, 0.58, tyndall) + bloom * 0.08;
+  agentMat.size = mix(0.05, 0.074, tyndall);
+  hazeMat.opacity = mix(0.34, 0.62, tyndall);
+  ambient.intensity = 0.32 + bloom * 0.16;
+  scene.fog.density = 0.012 + tyndall * 0.011 + bloom * 0.007 + Math.sin(t * 0.11) * 0.0015;
+
+  for (let ch = 0; ch < N_CH; ch++) {
+    channelEnergy[ch] = Math.max(0, channelEnergy[ch] - dt * (0.72 + channelEnergy[ch] * 0.62));
+    const e = Math.min(1, channelEnergy[ch] / 0.82);
+    const breathe = 0.5 + 0.5 * Math.sin(t * 0.7 + ch * 0.41);
+    const beamVisibility = mix(0.14, 0.72, immersion);
+
+    const beam = spotBeams[ch];
+    beam.mat.opacity = (0.0035 + e * 0.02 + bloom * 0.003) * beamVisibility;
+    beam.coreMat.opacity = (0.0018 + e * 0.012 + bloom * 0.0025) * beamVisibility;
+    const beamSpread = 0.68 + e * 0.62 + breathe * 0.025;
+    beam.mesh.scale.set(beamSpread, 1, beamSpread);
+    beam.core.scale.set(0.85 + e * 0.82, 1, 0.85 + e * 0.82);
+
+    const shaft = beamShafts[ch];
+    shaft.sprite.scale.set(BEAM_LENGTH * (0.68 + e * 0.12), 0.78 + e * 0.62, 1);
+    shaft.mat.opacity = mix(0.05, 0.28, tyndall) + e * 0.25 + bloom * 0.02;
+
+    const guide = beamGuides[ch];
+    guide.mat.opacity = mix(0.028, 0.085, immersion) + e * 0.08 + bloom * 0.014;
+
+    const head = spotHeads[ch];
+    head.mat.opacity = mix(0.1, 0.22, immersion) + e * 0.26 + bloom * 0.03;
+    head.glowMat.opacity = mix(0.012, 0.04, tyndall) + e * 0.06 + bloom * 0.012;
+    head.glow.scale.setScalar(0.1 + e * 0.16 + breathe * 0.015 + tyndall * 0.04);
+
+    const pad = lightPads[ch];
+    const padScale = mix(0.65, 0.86, immersion) + e * 0.68;
+    pad.mesh.scale.set(padScale * 1.15, padScale * 1.15, 1);
+    pad.mat.opacity = mix(0.09, 0.18, tyndall) + e * 0.22 + bloom * 0.018;
+  }
+
+  for (const a of aisleShafts) {
+    const breathe = 0.5 + 0.5 * Math.sin(t * 0.32 + a.phase);
+    a.sprite.position.x = Math.sin(t * 0.11 + a.phase) * 0.08;
+    a.sprite.scale.set(1.18 + breathe * 0.28 + bloom * 0.08, BEAM_HEIGHT * 0.95, 1);
+    a.mat.opacity = tyndall * (0.075 + breathe * 0.034 + bloom * 0.02);
+  }
+
+  for (let i = 0; i < AGENT_COUNT; i++) {
+    const seed = agentSeeds[i];
+    const pos = electrodePos[seed.ch];
+    const e = Math.min(1, channelEnergy[seed.ch] / 0.78);
+    const theta = seed.phase + t * seed.speed + e * 1.8 + bloom * 0.18;
+    const orbit = seed.radius + e * 0.62 + bloom * 0.28;
+    const depth = 0.25 + (seed.height / BEAM_HEIGHT) * (BEAM_LENGTH * 0.82);
+    const centerX = pos.x + pos.dir.x * depth;
+    const centerY = pos.y + pos.dir.y * depth;
+    const centerZ = pos.z + pos.dir.z * depth;
+    const lift = Math.sin(theta * 1.7 + t * 0.42) * (0.18 + e * 0.5 + tyndall * 0.26);
+    const flock = tyndall * (0.22 + e * 0.72 + bloom * 0.22);
+    const wander = Math.sin(t * 0.19 + seed.phase) * (bloom * 0.35 + flock);
+    const sweep = Math.sin(t * 0.37 + seed.phase * 1.7 + seed.ch * 0.21) * flock;
+    const lane = Math.sin(t * 0.23 + seed.phase + seed.rowBias * 9) * flock * 0.55;
+    const i3 = i * 3;
+
+    agentPositions[i3] = centerX + pos.inward * (Math.cos(theta) * orbit * 0.16 + e * 0.26) + sweep * 0.45;
+    agentPositions[i3 + 1] = centerY + Math.sin(theta) * orbit * 0.52 + lift;
+    agentPositions[i3 + 2] = centerZ + Math.sin(theta * 1.12 + seed.rowBias) * orbit + wander * 0.18 + lane;
+
+    const hot = Math.min(1, e * 0.92 + bloom * 0.22 + tyndall * 0.18);
+    const goldMix = Math.max(0, Math.sin(seed.phase + t * 0.31)) * hot * 0.42;
+    agentColors[i3] = 0.24 + hot * (0.38 + goldMix);
+    agentColors[i3 + 1] = 0.28 + hot * 0.56;
+    agentColors[i3 + 2] = 0.22 + hot * (0.46 - goldMix * 0.2);
+  }
+  agentGeo.attributes.position.needsUpdate = true;
+  agentGeo.attributes.color.needsUpdate = true;
+
+  for (let i = 0; i < HAZE_COUNT; i++) {
+    const seed = hazeSeeds[i];
+    const pos = electrodePos[seed.ch];
+    const e = Math.min(1, channelEnergy[seed.ch] / 0.78);
+    const yRange = BEAM_HEIGHT - 0.28;
+    const y = 0.12 + ((seed.y + t * (0.12 + seed.drift * 0.72) + e * 0.22) % yRange);
+    const rise = y / BEAM_HEIGHT;
+    const depth = rise * BEAM_LENGTH;
+    const centerX = pos.x + pos.dir.x * depth;
+    const centerY = pos.y + pos.dir.y * depth;
+    const centerZ = pos.z + pos.dir.z * depth;
+    const radiusAtY = BEAM_RADIUS * (0.1 + rise * 1.05);
+    const rad = Math.min(radiusAtY, seed.radial + e * 0.22 + bloom * 0.06);
+    const theta = seed.theta + t * seed.drift + Math.sin(t * 0.09 + seed.phase) * 0.18;
+    const i3 = i * 3;
+
+    hazePositions[i3] = centerX + pos.inward * Math.cos(theta) * rad * 0.18;
+    hazePositions[i3 + 1] = centerY + Math.sin(theta) * rad * 0.72;
+    hazePositions[i3 + 2] = centerZ + Math.cos(theta * 1.1) * rad;
+
+    const coneFalloff = Math.pow(0.24 + rise * 0.76, 0.72) * (1 - smoothstep(0.9, 1, rise) * 0.28);
+    const mote = (0.08 + e * 0.52 + bloom * 0.1 + tyndall * 0.12) * coneFalloff * mix(0.45, 1.15, tyndall);
+    const warm = seed.warmth > 0.82 ? 1 : 0;
+    hazeColors[i3] = mote * (warm ? 1.34 : 0.64);
+    hazeColors[i3 + 1] = mote * (warm ? 1.05 : 1.15);
+    hazeColors[i3 + 2] = mote * (warm ? 0.52 : 0.92);
+  }
+  hazeGeo.attributes.position.needsUpdate = true;
+  hazeGeo.attributes.color.needsUpdate = true;
+
+  for (let i = 0; i < TYNDALL_STREAKS; i++) {
+    const seed = tyndallSeeds[i];
+    const pos = electrodePos[seed.ch];
+    const e = Math.min(1, channelEnergy[seed.ch] / 0.78);
+    const yRange = BEAM_HEIGHT - 0.35;
+    const y = 0.13 + ((seed.y + t * seed.speed + e * 0.42) % yRange);
+    const rise = y / BEAM_HEIGHT;
+    const depth = rise * BEAM_LENGTH;
+    const centerX = pos.x + pos.dir.x * depth;
+    const centerY = pos.y + pos.dir.y * depth;
+    const centerZ = pos.z + pos.dir.z * depth;
+    const radiusAtY = BEAM_RADIUS * (0.08 + rise * 1.08);
+    const rad = Math.min(radiusAtY, seed.radial * (0.24 + rise * 0.86) + e * 0.08);
+    const theta = seed.theta + Math.sin(t * 0.21 + seed.phase) * 0.24;
+    const x = centerX + pos.inward * Math.cos(theta) * rad * 0.14;
+    const yy = centerY + Math.sin(theta) * rad * 0.68;
+    const z = centerZ + Math.cos(theta * 1.07) * rad;
+    const len = seed.length * (0.6 + tyndall * 0.75 + e * 1.1);
+    const i6 = i * 6;
+    tyndallPositions[i6] = x;
+    tyndallPositions[i6 + 1] = yy;
+    tyndallPositions[i6 + 2] = z;
+    tyndallPositions[i6 + 3] = x + pos.dir.x * len + Math.sin(seed.phase) * 0.012;
+    tyndallPositions[i6 + 4] = yy + pos.dir.y * len + Math.sin(seed.phase * 1.3) * 0.012;
+    tyndallPositions[i6 + 5] = z + pos.dir.z * len + Math.cos(seed.phase) * 0.012;
+  }
+  tyndallGeo.attributes.position.needsUpdate = true;
+    tyndallMat.opacity = tyndall * (0.042 + bloom * 0.018);
+
+  for (const f of fogSheets) {
+    const swim = t * f.drift + f.phase;
+    f.sprite.position.x = f.baseX + Math.sin(swim * 0.7) * 0.55 + Math.sin(t * 0.09 + f.phase) * 0.22;
+    f.sprite.position.y = f.baseY + Math.sin(swim * 0.43) * 0.28;
+    f.sprite.position.z = f.baseZ + Math.cos(swim * 0.6) * 0.62;
+    const swell = 1 + Math.sin(swim) * 0.08 + bloom * 0.08;
+    f.sprite.scale.set(f.width * swell, f.height * (1 + Math.cos(swim * 0.8) * 0.1), 1);
+    f.mat.opacity = f.opacity * mix(0.42, 0.7, tyndall) * (0.72 + Math.sin(swim * 0.9) * 0.28) + bloom * 0.008;
+  }
+
+  const stride = Math.floor(AGENT_COUNT / STRAND_COUNT);
+  for (let s = 0; s < STRAND_COUNT; s++) {
+    const agentIdx = (s * stride) % AGENT_COUNT;
+    const seed = agentSeeds[agentIdx];
+    const pos = electrodePos[seed.ch];
+    const a3 = agentIdx * 3;
+    const s6 = s * 6;
+    strandPositions[s6] = pos.x;
+    strandPositions[s6 + 1] = pos.y;
+    strandPositions[s6 + 2] = pos.z;
+    strandPositions[s6 + 3] = agentPositions[a3];
+    strandPositions[s6 + 4] = agentPositions[a3 + 1];
+    strandPositions[s6 + 5] = agentPositions[a3 + 2];
+  }
+  strandGeo.attributes.position.needsUpdate = true;
+}
+
 // === Playback ===
 let spikeCount = 0;
 let dtMs = null, chArr = null, ampArr = null;
@@ -1068,15 +1901,7 @@ function animate(now) {
 
   const tweening = tweenUpdate(now);
 
-  if (!tweening && viewMode === 'topdown') {
-    driftAngle += dt * 0.06;
-    const r = 0.9;
-    camera.position.x = Math.sin(driftAngle) * r;
-    camera.position.z = Math.cos(driftAngle) * r;
-    camera.position.y = TOPDOWN_Y;
-    camera.lookAt(0, 0, 0);
-  }
-  if (!tweening && viewMode === 'float') controls.update();
+  if (!tweening) updateJourneyCamera();
 
   updateAudioListener();
 
@@ -1097,7 +1922,10 @@ function animate(now) {
     while (cursor < spikeCount && dtMs[cursor] <= playbackMs) {
       const ch = chArr[cursor];
       const amp = ampArr[cursor];
+      const ampNorm = Math.min(Math.abs(amp) / 127, 1);
       sprites[ch].pulse = Math.min(1.6, sprites[ch].pulse + 0.55);
+      channelEnergy[ch] = Math.min(1.7, channelEnergy[ch] + 0.028 + ampNorm * 0.075);
+      globalBloom = Math.min(1.4, globalBloom + 0.00055 + ampNorm * 0.00075);
       playClick(ch, amp);
       cursor++;
     }
@@ -1106,11 +1934,12 @@ function animate(now) {
   // Decay pulse + apply scale + opacity
   for (const s of sprites) {
     s.pulse = Math.max(0, s.pulse - dt * 4.5);
-    const scale = s.baseScale + s.pulse * 0.85;
+    const scale = s.baseScale + s.pulse * 0.18;
     s.sprite.scale.set(scale, scale, scale);
-    s.mat.opacity = 0.6 + Math.min(0.4, s.pulse * 0.4);
+    s.mat.opacity = 0.08 + Math.min(0.24, s.pulse * 0.18);
   }
 
+  updateChamber(now, dt);
   updateHUD();
   renderer.render(scene, camera);
 }
@@ -1135,10 +1964,10 @@ document.getElementById('room-sound').addEventListener('click', () => {
   if (soundOn) {
     initAudio();
     if (audioCtx.state === 'suspended') audioCtx.resume();
-    document.getElementById('room-sound').textContent = '♪ sound on';
+    document.getElementById('room-sound').textContent = '♪ sound off';
     document.getElementById('room-sound').classList.add('sound-on');
   } else {
-    document.getElementById('room-sound').textContent = '♪ sound off';
+    document.getElementById('room-sound').textContent = '♪ sound on';
     document.getElementById('room-sound').classList.remove('sound-on');
   }
 });
@@ -1156,8 +1985,36 @@ document.getElementById('room-progress').addEventListener('click', (e) => {
   document.getElementById('end-replay').classList.remove('visible');
 });
 
-document.getElementById('vt-topdown').addEventListener('click', () => setViewMode('topdown'));
-document.getElementById('vt-float').addEventListener('click', () => setViewMode('float'));
+function wireViewButton(id, mode) {
+  const btn = document.getElementById(id);
+  const activate = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setViewMode(mode);
+  };
+  btn.onclick = activate;
+  btn.addEventListener('pointerdown', activate);
+  btn.addEventListener('mousedown', activate);
+  btn.addEventListener('touchstart', activate, { passive: false });
+}
+wireViewButton('vt-topdown', 'topdown');
+wireViewButton('vt-float', 'float');
+document.addEventListener('pointerdown', (e) => {
+  const btn = e.target.closest && e.target.closest('#vt-topdown, #vt-float');
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  setViewMode(btn.id === 'vt-float' ? 'float' : 'topdown');
+}, true);
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest && e.target.closest('#vt-topdown, #vt-float');
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  setViewMode(btn.id === 'vt-float' ? 'float' : 'topdown');
+}, true);
 
 document.getElementById('end-replay').addEventListener('click', () => {
   setPlaybackMs(0);
@@ -1171,6 +2028,9 @@ async function loadSpikes() {
   const loadingEl = document.getElementById('loading');
   loadingEl.textContent = 'loading dataset · 0%';
   try {
+    if (window.location.protocol === 'file:') {
+      throw new Error('open via http://127.0.0.1:8000/ so the browser can fetch data files');
+    }
     const resp = await fetch('data/fs437_spikes.bin');
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const totalHdr = resp.headers.get('content-length');
@@ -1215,7 +2075,6 @@ async function loadSpikes() {
 
     loadingEl.classList.add('done');
     document.getElementById('hud').classList.add('visible');
-    document.getElementById('view-toggle').classList.add('visible');
     document.getElementById('transport').classList.add('visible');
 
     // Auto-start playback (silent — user enables sound separately)
@@ -1741,10 +2600,10 @@ window.__fs437Explainer = {
       if (state.soundOn) {
         initAudio();
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        soundBtn.textContent = '♪ sound on';
+        soundBtn.textContent = '♪ sound off';
         soundBtn.classList.add('sound-on');
       } else {
-        soundBtn.textContent = '♪ sound off';
+        soundBtn.textContent = '♪ sound on';
         soundBtn.classList.remove('sound-on');
       }
     });

@@ -10,20 +10,20 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: hsl(0 0% 97%);
-  --bg-soft: hsl(0 0% 94%);
-  --fg: hsl(220 20% 8%);
-  --fg-soft: hsl(220 20% 8% / 0.55);
-  --fg-faint: hsl(220 20% 8% / 0.08);
-  --teal: hsl(160 20% 35%);
-  --teal-soft: hsl(160 20% 35% / 0.55);
-  --teal-faint: hsl(160 20% 35% / 0.15);
-  --teal-bg: hsl(160 20% 35% / 0.08);
-  --night: hsl(36 8% 6%);
-  --night-soft: hsl(42 10% 12%);
-  --cream: hsl(42 35% 92%);
-  --cream-soft: hsl(42 35% 92% / 0.62);
-  --gold: hsl(43 45% 63%);
+  --bg: hsl(40 9% 96%);
+  --bg-soft: hsl(40 7% 92%);
+  --fg: hsl(35 8% 8%);
+  --fg-soft: hsl(35 8% 8% / 0.55);
+  --fg-faint: hsl(35 8% 8% / 0.08);
+  --teal: hsl(82 5% 68%);
+  --teal-soft: hsl(82 5% 68% / 0.55);
+  --teal-faint: hsl(82 5% 68% / 0.15);
+  --teal-bg: hsl(82 5% 68% / 0.08);
+  --night: hsl(40 3% 5%);
+  --night-soft: hsl(40 4% 11%);
+  --cream: hsl(42 16% 88%);
+  --cream-soft: hsl(42 16% 88% / 0.62);
+  --gold: hsl(38 17% 62%);
 }
 
 html, body {
@@ -44,14 +44,14 @@ body.mode-read { overflow: auto; }
 #start-screen {
   position: fixed; inset: 0;
   background:
-    radial-gradient(circle at 52% 42%, hsl(160 20% 35% / 0.22) 0%, transparent 30%),
-    radial-gradient(circle at 28% 72%, hsl(43 45% 63% / 0.12) 0%, transparent 28%),
-    linear-gradient(180deg, hsl(36 8% 5%) 0%, var(--night) 72%, hsl(42 10% 8%) 100%);
+    radial-gradient(circle at 52% 42%, hsl(45 8% 70% / 0.09) 0%, transparent 32%),
+    radial-gradient(circle at 28% 72%, hsl(38 17% 62% / 0.055) 0%, transparent 30%),
+    linear-gradient(180deg, hsl(40 3% 4%) 0%, var(--night) 74%, hsl(40 4% 7%) 100%);
   color: var(--cream);
   display: flex; align-items: center; justify-content: center;
   z-index: 100;
   overflow: hidden;
-  border-bottom: 1px solid hsl(42 30% 80% / 0.18);
+  border-bottom: 1px solid hsl(42 16% 88% / 0.12);
   transition: transform 1.0s cubic-bezier(0.7, 0.0, 0.3, 1.0);
 }
 #start-screen.lifted { transform: translateY(-100%); }
@@ -66,8 +66,8 @@ body.mode-read { overflow: auto; }
 #start-frost {
   position: absolute; inset: -40%; z-index: -1;
   background:
-    radial-gradient(ellipse at center, hsl(42 35% 92% / 0.10) 0%, hsl(42 35% 92% / 0.04) 30%, transparent 56%),
-    repeating-linear-gradient(90deg, transparent 0 38px, hsl(42 35% 92% / 0.025) 38px 39px);
+    radial-gradient(ellipse at center, hsl(42 16% 88% / 0.08) 0%, hsl(42 16% 88% / 0.03) 30%, transparent 56%),
+    repeating-linear-gradient(90deg, transparent 0 38px, hsl(42 16% 88% / 0.018) 38px 39px);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   pointer-events: none;
@@ -78,7 +78,7 @@ body.mode-read { overflow: auto; }
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: hsl(43 45% 63% / 0.78);
+  color: hsl(38 17% 62% / 0.72);
   margin-bottom: 24px;
 }
 
@@ -87,7 +87,7 @@ body.mode-read { overflow: auto; }
   font-size: clamp(56px, 8vw, 118px);
   font-weight: 300;
   letter-spacing: 0;
-  color: hsl(42 35% 92% / 0.78);
+  color: hsl(42 16% 88% / 0.76);
   text-transform: lowercase;
   line-height: 1.0;
   margin-bottom: 22px;
@@ -98,7 +98,7 @@ body.mode-read { overflow: auto; }
   text-decoration: none;
   transition: color 0.3s;
 }
-#start-inner h1 a:hover { color: hsl(160 30% 62%); }
+#start-inner h1 a:hover { color: hsl(42 16% 88% / 0.92); }
 
 #start-inner .start-desc {
   font-family: 'Host Grotesk', sans-serif;
@@ -119,7 +119,7 @@ body.mode-read { overflow: auto; }
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: hsl(42 35% 92% / 0.48);
+  color: hsl(42 16% 88% / 0.42);
 }
 #start-inner .start-proof span:not(:last-child)::after {
   content: "";
@@ -128,24 +128,75 @@ body.mode-read { overflow: auto; }
   height: 3px;
   margin-left: 18px;
   vertical-align: middle;
-  background: hsl(43 45% 63% / 0.55);
+  background: hsl(38 17% 62% / 0.45);
 }
 
 #start-hint {
   font-family: 'Space Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.18em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: hsl(42 35% 92% / 0.5);
-  margin-top: 34px;
+  color: hsl(42 16% 88% / 0.78);
+  margin-top: 38px;
+  padding: 12px 16px;
+  border: 1px solid hsl(42 16% 88% / 0.16);
+  background: hsl(42 16% 88% / 0.035);
   cursor: pointer;
   user-select: none;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+#start-hint:hover {
+  border-color: hsl(42 16% 88% / 0.38);
+  background: hsl(42 16% 88% / 0.07);
+  color: hsl(42 16% 88% / 0.92);
+}
+#start-hint .scroll-icon {
+  position: relative;
+  width: 18px;
+  height: 28px;
+  border: 1px solid hsl(42 16% 88% / 0.38);
+  border-radius: 9px;
+  flex: 0 0 auto;
+}
+#start-hint .scroll-icon::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 2px;
+  height: 6px;
+  background: hsl(42 16% 88% / 0.72);
+  transform: translateX(-50%);
+  animation: scroll-wheel 1.7s ease-in-out infinite;
+}
+#start-hint .hint-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+#start-hint .hint-main {
+  white-space: nowrap;
+}
+#start-hint .hint-sub {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: hsl(42 16% 88% / 0.46);
 }
 #start-hint .arrow {
-  display: block;
-  margin-top: 8px;
-  font-size: 16px;
+  font-size: 17px;
+  line-height: 1;
   animation: scroll-bounce 2.2s ease-in-out infinite;
+}
+@keyframes scroll-wheel {
+  0%, 100% { transform: translate(-50%, 0); opacity: 0.35; }
+  45%      { transform: translate(-50%, 8px); opacity: 0.9; }
 }
 @keyframes scroll-bounce {
   0%, 100% { transform: translateY(0); opacity: 0.35; }
@@ -160,7 +211,7 @@ body.mode-read { overflow: auto; }
 #start-footer .credit {
   font-family: 'Host Grotesk', sans-serif;
   font-size: 14px; font-weight: 300;
-  color: hsl(42 35% 92% / 0.34);
+  color: hsl(42 16% 88% / 0.3);
   letter-spacing: 0.04em;
 }
 #start-footer .credit a { color: inherit; text-decoration: none; }
@@ -228,41 +279,41 @@ body.mode-read #room {
   font-size: 14px; font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: hsl(42 35% 92% / 0.88);
+  color: hsl(42 16% 88% / 0.86);
   line-height: 1.5;
 }
 #hud .hud-meta {
   margin-top: 6px;
   font-family: 'Space Mono', monospace;
   font-size: 11px; letter-spacing: 0.04em;
-  color: hsl(42 35% 92% / 0.58);
+  color: hsl(42 16% 88% / 0.52);
   line-height: 1.7;
 }
 #hud .hud-divider {
   margin: 12px 0 8px;
   width: 40px;
-  border-top: 1px solid hsl(42 35% 92% / 0.16);
+  border-top: 1px solid hsl(42 16% 88% / 0.12);
 }
 #hud .hud-time, #hud .hud-rate {
   font-family: 'Space Mono', monospace;
   font-size: 11px; letter-spacing: 0.04em;
-  color: hsl(42 35% 92% / 0.7);
+  color: hsl(42 16% 88% / 0.62);
   line-height: 1.8;
   font-variant-numeric: tabular-nums;
 }
 
 body.mode-listen #toggle-pill {
-  color: hsl(42 35% 92% / 0.55);
+  color: hsl(42 16% 88% / 0.5);
 }
 body.mode-listen #toggle-pill .dot {
-  color: hsl(42 35% 92% / 0.25);
+  color: hsl(42 16% 88% / 0.22);
 }
 body.mode-listen #toggle-pill .active {
   color: var(--cream);
   border-bottom-color: var(--cream);
 }
 body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
-  color: hsl(42 35% 92% / 0.85);
+  color: hsl(42 16% 88% / 0.82);
 }
 
 /* View toggle bottom-left */
@@ -279,8 +330,8 @@ body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
 #view-toggle.visible { opacity: 1; }
 .vt-btn {
   background: transparent;
-  border: 1px solid hsl(42 35% 92% / 0.16);
-  color: hsl(42 35% 92% / 0.56);
+  border: 1px solid hsl(42 16% 88% / 0.14);
+  color: hsl(42 16% 88% / 0.5);
   font-family: inherit; font-size: inherit; letter-spacing: inherit;
   padding: 5px 12px;
   cursor: pointer;
@@ -289,9 +340,9 @@ body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
 }
 .vt-btn:hover { border-color: var(--teal); color: var(--teal); }
 .vt-btn.active {
-  background: hsl(160 20% 35% / 0.16);
-  border-color: hsl(160 28% 66% / 0.75);
-  color: hsl(160 28% 66%);
+  background: hsl(42 16% 88% / 0.08);
+  border-color: hsl(42 16% 88% / 0.58);
+  color: hsl(42 16% 88%);
 }
 
 /* Transport bottom-center */
@@ -302,10 +353,10 @@ body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
   z-index: 20;
   display: flex; align-items: center; gap: 18px;
   padding: 12px 20px;
-  background: hsl(36 8% 6% / 0.74);
+  background: hsl(40 3% 5% / 0.78);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid hsl(42 35% 92% / 0.12);
+  border: 1px solid hsl(42 16% 88% / 0.1);
   border-radius: 2px;
   max-width: 90vw; width: 700px;
   opacity: 0;
@@ -317,31 +368,31 @@ body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
   font-size: 13px; font-weight: 400;
   letter-spacing: 0.04em;
   background: transparent;
-  color: hsl(160 28% 66%);
-  border: 1px solid hsl(160 28% 66% / 0.28);
+  color: hsl(42 16% 88% / 0.76);
+  border: 1px solid hsl(42 16% 88% / 0.18);
   padding: 6px 14px;
   cursor: pointer;
   border-radius: 2px;
   transition: all 0.2s;
   white-space: nowrap;
 }
-#transport button:hover { border-color: hsl(160 28% 66%); background: hsl(160 28% 66% / 0.08); }
+#transport button:hover { border-color: hsl(42 16% 88% / 0.7); background: hsl(42 16% 88% / 0.06); }
 #transport button.sound-on {
-  background: hsl(160 28% 66%);
+  background: hsl(42 16% 88% / 0.84);
   color: var(--night);
-  border-color: hsl(160 28% 66%);
+  border-color: hsl(42 16% 88% / 0.84);
 }
 #transport .t-time {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  color: hsl(42 35% 92% / 0.6);
+  color: hsl(42 16% 88% / 0.56);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 #transport .t-progress {
   flex: 1;
   height: 2px;
-  background: hsl(42 35% 92% / 0.14);
+  background: hsl(42 16% 88% / 0.12);
   position: relative;
   cursor: pointer;
   min-width: 100px;
@@ -367,7 +418,7 @@ body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
   font-family: 'Space Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.08em;
-  color: hsl(42 35% 92% / 0.64);
+  color: hsl(42 16% 88% / 0.58);
   z-index: 25;
   pointer-events: none;
   transition: opacity 0.6s ease;
@@ -382,17 +433,17 @@ body.mode-listen #toggle-pill span:not(.active):not(.dot):hover {
   transform: translateX(-50%);
   font-family: 'Host Grotesk', sans-serif;
   font-size: 14px; letter-spacing: 0.08em;
-  color: hsl(160 28% 66%);
+  color: hsl(42 16% 88% / 0.72);
   cursor: pointer;
   padding: 8px 16px;
-  border-bottom: 1px solid hsl(160 28% 66% / 0.3);
+  border-bottom: 1px solid hsl(42 16% 88% / 0.26);
   z-index: 21;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
 }
 #end-replay.visible { opacity: 1; pointer-events: auto; }
-#end-replay:hover { border-bottom-color: hsl(160 28% 66%); }
+#end-replay:hover { border-bottom-color: hsl(42 16% 88% / 0.72); }
 
 /* ═══════════ EXPLAINER ═══════════ */
 #explainer {
@@ -597,7 +648,7 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
   max-width: 320px;
   letter-spacing: 0.02em;
 }
-.tooltip strong { color: hsl(160 30% 65%); font-weight: 700; letter-spacing: 0.04em; }
+.tooltip strong { color: hsl(42 16% 88%); font-weight: 700; letter-spacing: 0.04em; }
 
 /* Footer */
 #explainer footer {
@@ -671,7 +722,14 @@ body.mode-read #explainer { opacity: 1; visibility: visible; }
     <h1>fs437<a href="https://tentatively725.com" target="_blank" rel="noopener">*</a></h1>
     <div class="start-desc">Thirty-two electrodes become light, sound, and synthetic motion; five days of activity become a chamber you can enter.</div>
     <div class="start-proof"><span>2.6M spike events</span><span>118 hours</span><span>32 channels</span></div>
-    <div id="start-hint">scroll to enter<span class="arrow">↓</span></div>
+    <div id="start-hint">
+      <span class="scroll-icon" aria-hidden="true"></span>
+      <span class="hint-copy">
+        <span class="hint-main">scroll down to experience</span>
+        <span class="hint-sub">use your trackpad or mouse wheel</span>
+      </span>
+      <span class="arrow" aria-hidden="true">↓</span>
+    </div>
   </div>
   <div id="start-footer">
     <div class="credit">data: <a href="https://finalspark.com" target="_blank" rel="noopener">finalspark · neuroplatform, vevey, switzerland</a></div>
@@ -880,12 +938,11 @@ function buildHaloTexture() {
   const ctx = c.getContext('2d');
   const cx = size / 2, cy = size / 2;
   const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, size / 2);
-  // Teal HSL(160, 20%, 35%) ≈ rgb(72, 110, 95)
-  g.addColorStop(0.00, 'rgba(56, 88, 75, 1.0)');
-  g.addColorStop(0.18, 'rgba(56, 88, 75, 0.78)');
-  g.addColorStop(0.40, 'rgba(56, 88, 75, 0.32)');
-  g.addColorStop(0.70, 'rgba(56, 88, 75, 0.08)');
-  g.addColorStop(1.00, 'rgba(56, 88, 75, 0.0)');
+  g.addColorStop(0.00, 'rgba(190, 192, 184, 0.96)');
+  g.addColorStop(0.18, 'rgba(190, 192, 184, 0.62)');
+  g.addColorStop(0.40, 'rgba(190, 192, 184, 0.24)');
+  g.addColorStop(0.70, 'rgba(190, 192, 184, 0.06)');
+  g.addColorStop(1.00, 'rgba(190, 192, 184, 0.0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   const tex = new THREE.CanvasTexture(c);
@@ -910,9 +967,9 @@ function buildFogTexture() {
       const grain = 0.72 + 0.28 * Math.sin(x * 0.17 + y * 0.11) * Math.sin(x * 0.031 + y * 0.047);
       const alpha = Math.pow(falloff, 2.7) * grain * 105;
       const i = (y * size + x) * 4;
-      img.data[i] = 232;
-      img.data[i + 1] = 238;
-      img.data[i + 2] = 224;
+      img.data[i] = 222;
+      img.data[i + 1] = 222;
+      img.data[i + 2] = 214;
       img.data[i + 3] = alpha;
     }
   }
@@ -942,9 +999,9 @@ function buildBeamTexture() {
       const filament = 0.82 + 0.18 * Math.sin(x * 0.22 + y * 0.045) * Math.sin(y * 0.019);
       const alpha = Math.min(132, (core + edge) * vertical * filament * 92);
       const i = (y * w + x) * 4;
-      img.data[i] = 214;
-      img.data[i + 1] = 244;
-      img.data[i + 2] = 226;
+      img.data[i] = 225;
+      img.data[i + 1] = 225;
+      img.data[i + 2] = 217;
       img.data[i + 3] = alpha;
     }
   }
@@ -961,13 +1018,13 @@ const canvas = document.getElementById('three-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x0b0907, 1);
+renderer.setClearColor(0x080807, 1);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0907);
-scene.fog = new THREE.FogExp2(0x11100d, 0.075);
+scene.background = new THREE.Color(0x080807);
+scene.fog = new THREE.FogExp2(0x10100e, 0.075);
 
-const ambient = new THREE.HemisphereLight(0xd8c8a6, 0x12100d, 0.34);
+const ambient = new THREE.HemisphereLight(0xe2ded3, 0x10100e, 0.3);
 scene.add(ambient);
 
 const camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 200);
@@ -1026,7 +1083,7 @@ for (let r = 0; r < ROWS; r++) {
     sprites.push({ sprite: s, mat, ch, pulse: 0, baseScale: 0.18 });
 
     const padMat = new THREE.MeshBasicMaterial({
-      color: ch % 5 === 0 ? 0xd7b56d : 0x86d9bd,
+      color: ch % 5 === 0 ? 0xb6aa8e : 0xbfc1ba,
       transparent: true,
       opacity: 0.045,
       depthWrite: false,
@@ -1054,8 +1111,8 @@ const beamGeo = new THREE.ConeGeometry(BEAM_RADIUS, BEAM_LENGTH, 48, 1, true);
 const beamCoreGeo = new THREE.ConeGeometry(BEAM_RADIUS * 0.38, BEAM_LENGTH * 0.96, 40, 1, true);
 const headGeo = new THREE.BoxGeometry(0.34, 0.08, 0.34);
 const beamTex = buildBeamTexture();
-const chamberTeal = new THREE.Color(0x86d9bd);
-const chamberGold = new THREE.Color(0xd7b56d);
+const chamberTeal = new THREE.Color(0xbfc1ba);
+const chamberGold = new THREE.Color(0xb6aa8e);
 const coneSourceAxis = new THREE.Vector3(0, -1, 0);
 function orientBeamFromWall(mesh, pos, length = BEAM_LENGTH) {
   const source = new THREE.Vector3(pos.x, pos.y, pos.z);
@@ -1141,7 +1198,7 @@ for (let i = 0; i < 7; i++) {
   const z = -4.2 + i * 1.4;
   const mat = new THREE.SpriteMaterial({
     map: beamTex,
-    color: 0x9ccbb6,
+    color: 0xb6b8b0,
     transparent: true,
     opacity: 0,
     depthWrite: false,
@@ -1159,7 +1216,7 @@ const gridSize = TUNNEL_WALL_X * 2 + 2.4;
 const chamberFloor = new THREE.Mesh(
   new THREE.CircleGeometry(gridSize * 0.58, 96),
   new THREE.MeshBasicMaterial({
-    color: 0x4c725f,
+    color: 0x4d504a,
     transparent: true,
     opacity: 0.045,
     depthWrite: false,
@@ -1170,13 +1227,13 @@ chamberFloor.rotation.x = -Math.PI / 2;
 chamberFloor.position.y = -0.025;
 scene.add(chamberFloor);
 
-const grid = new THREE.GridHelper(gridSize, 16, 0xd8ceb3, 0xd8ceb3);
+const grid = new THREE.GridHelper(gridSize, 16, 0x9b9a90, 0x9b9a90);
 grid.material.opacity = 0.075;
 grid.material.transparent = true;
 grid.position.y = -0.02;
 scene.add(grid);
 
-const perspectiveGrid = new THREE.GridHelper(gridSize * 1.45, 28, 0x9fbfae, 0x55685c);
+const perspectiveGrid = new THREE.GridHelper(gridSize * 1.45, 28, 0x9a9b94, 0x555650);
 perspectiveGrid.material.opacity = 0;
 perspectiveGrid.material.transparent = true;
 perspectiveGrid.position.y = -0.018;
@@ -1191,7 +1248,7 @@ const wallYMax = TUNNEL_Y_MIN + (ROWS - 1) * TUNNEL_Y_STEP + 0.58;
 const aisleFloor = new THREE.Mesh(
   new THREE.PlaneGeometry(SPACING * 1.12, floorZMax - floorZMin),
   new THREE.MeshBasicMaterial({
-    color: 0x87d8be,
+    color: 0x9fa29a,
     transparent: true,
     opacity: 0,
     depthWrite: false,
@@ -1204,7 +1261,7 @@ aisleFloor.position.y = 0.012;
 scene.add(aisleFloor);
 
 const wallPlaneMat = new THREE.MeshBasicMaterial({
-  color: 0x6fa691,
+  color: 0x74766f,
   transparent: true,
   opacity: 0.028,
   depthWrite: false,
@@ -1241,7 +1298,7 @@ structureLinePositions.push(floorXMax, wallYMin, floorZMin, floorXMax, wallYMin,
 const structureLineGeo = new THREE.BufferGeometry();
 structureLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(structureLinePositions, 3));
 const structureLineMat = new THREE.LineBasicMaterial({
-  color: 0xaad5c2,
+  color: 0xb9bab2,
   transparent: true,
   opacity: 0,
   depthWrite: false,
@@ -1266,7 +1323,7 @@ for (let ch = 0; ch < N_CH; ch++) {
   const guideGeo = new THREE.BufferGeometry();
   guideGeo.setAttribute('position', new THREE.Float32BufferAttribute(guidePositions, 3));
   const guideMat = new THREE.LineBasicMaterial({
-    color: ch % 5 === 0 ? 0xd7b56d : 0x86d9bd,
+    color: ch % 5 === 0 ? 0xb6aa8e : 0xbfc1ba,
     transparent: true,
     opacity: 0,
     depthWrite: false,
@@ -1305,7 +1362,7 @@ rigLinePositions.push(aisleRight, portalTopY, floorZMin, aisleRight, portalTopY,
 const rigLineGeo = new THREE.BufferGeometry();
 rigLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(rigLinePositions, 3));
 const rigLineMat = new THREE.LineBasicMaterial({
-  color: 0xc7e5d4,
+  color: 0xc3c3ba,
   transparent: true,
   opacity: 0,
   depthWrite: false,
@@ -1356,7 +1413,7 @@ const strandPositions = new Float32Array(STRAND_COUNT * 2 * 3);
 const strandGeo = new THREE.BufferGeometry();
 strandGeo.setAttribute('position', new THREE.BufferAttribute(strandPositions, 3));
 const strandMat = new THREE.LineBasicMaterial({
-  color: 0x86d9bd,
+  color: 0xb8bab2,
   transparent: true,
   opacity: 0.045,
   depthWrite: false,
@@ -1417,7 +1474,7 @@ for (let i = 0; i < TYNDALL_STREAKS; i++) {
 const tyndallGeo = new THREE.BufferGeometry();
 tyndallGeo.setAttribute('position', new THREE.BufferAttribute(tyndallPositions, 3));
 const tyndallMat = new THREE.LineBasicMaterial({
-  color: 0xd7f5e8,
+  color: 0xdedfd8,
   transparent: true,
   opacity: 0,
   depthWrite: false,
@@ -1435,7 +1492,7 @@ for (let i = 0; i < FOG_SHEET_COUNT; i++) {
   const baseZ = -3.5 + seeded(i + 1933) * 7;
   const mat = new THREE.SpriteMaterial({
     map: fogTex,
-    color: seeded(i + 2053) > 0.72 ? 0xd7c58d : 0x9ccbb6,
+    color: seeded(i + 2053) > 0.78 ? 0xb6aa8e : 0xb8bab2,
     transparent: true,
     opacity: 0.08,
     depthTest: false,
@@ -1752,10 +1809,10 @@ function updateChamber(now, dt) {
     agentPositions[i3 + 2] = centerZ + Math.sin(theta * 1.12 + seed.rowBias) * orbit + wander * 0.18 + lane;
 
     const hot = Math.min(1, e * 0.92 + bloom * 0.22 + tyndall * 0.18);
-    const goldMix = Math.max(0, Math.sin(seed.phase + t * 0.31)) * hot * 0.42;
-    agentColors[i3] = 0.24 + hot * (0.38 + goldMix);
-    agentColors[i3 + 1] = 0.28 + hot * 0.56;
-    agentColors[i3 + 2] = 0.22 + hot * (0.46 - goldMix * 0.2);
+    const warmMix = Math.max(0, Math.sin(seed.phase + t * 0.31)) * hot * 0.16;
+    agentColors[i3] = 0.32 + hot * 0.42 + warmMix;
+    agentColors[i3 + 1] = 0.32 + hot * 0.4 + warmMix * 0.55;
+    agentColors[i3 + 2] = 0.3 + hot * 0.36;
   }
   agentGeo.attributes.position.needsUpdate = true;
   agentGeo.attributes.color.needsUpdate = true;
@@ -1783,9 +1840,9 @@ function updateChamber(now, dt) {
     const coneFalloff = Math.pow(0.24 + rise * 0.76, 0.72) * (1 - smoothstep(0.9, 1, rise) * 0.28);
     const mote = (0.08 + e * 0.52 + bloom * 0.1 + tyndall * 0.12) * coneFalloff * mix(0.45, 1.15, tyndall);
     const warm = seed.warmth > 0.82 ? 1 : 0;
-    hazeColors[i3] = mote * (warm ? 1.34 : 0.64);
-    hazeColors[i3 + 1] = mote * (warm ? 1.05 : 1.15);
-    hazeColors[i3 + 2] = mote * (warm ? 0.52 : 0.92);
+    hazeColors[i3] = mote * (warm ? 1.08 : 0.9);
+    hazeColors[i3 + 1] = mote * (warm ? 1.0 : 0.98);
+    hazeColors[i3 + 2] = mote * (warm ? 0.78 : 0.92);
   }
   hazeGeo.attributes.position.needsUpdate = true;
   hazeGeo.attributes.color.needsUpdate = true;
@@ -2104,7 +2161,7 @@ window.__fs437Explainer = {
 
     const FG_SOFT = 'hsla(220,20%,8%,0.55)';
     const FG_FAINT = 'hsla(220,20%,8%,0.08)';
-    const TEAL = 'hsl(160 20% 35%)';
+    const TEAL = 'hsl(82 5% 42%)';
     const TEAL_SOFT = 'hsla(160,20%,35%,0.55)';
     const TEAL_BG = 'hsla(160,20%,35%,0.14)';
 

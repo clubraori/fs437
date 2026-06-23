@@ -938,11 +938,11 @@ function buildHaloTexture() {
   const ctx = c.getContext('2d');
   const cx = size / 2, cy = size / 2;
   const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, size / 2);
-  g.addColorStop(0.00, 'rgba(190, 192, 184, 0.96)');
-  g.addColorStop(0.18, 'rgba(190, 192, 184, 0.62)');
-  g.addColorStop(0.40, 'rgba(190, 192, 184, 0.24)');
-  g.addColorStop(0.70, 'rgba(190, 192, 184, 0.06)');
-  g.addColorStop(1.00, 'rgba(190, 192, 184, 0.0)');
+  g.addColorStop(0.00, 'rgba(56, 88, 75, 1.0)');
+  g.addColorStop(0.18, 'rgba(56, 88, 75, 0.78)');
+  g.addColorStop(0.40, 'rgba(56, 88, 75, 0.32)');
+  g.addColorStop(0.70, 'rgba(56, 88, 75, 0.08)');
+  g.addColorStop(1.00, 'rgba(56, 88, 75, 0.0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   const tex = new THREE.CanvasTexture(c);
@@ -967,9 +967,9 @@ function buildFogTexture() {
       const grain = 0.72 + 0.28 * Math.sin(x * 0.17 + y * 0.11) * Math.sin(x * 0.031 + y * 0.047);
       const alpha = Math.pow(falloff, 2.7) * grain * 105;
       const i = (y * size + x) * 4;
-      img.data[i] = 222;
-      img.data[i + 1] = 222;
-      img.data[i + 2] = 214;
+      img.data[i] = 232;
+      img.data[i + 1] = 238;
+      img.data[i + 2] = 224;
       img.data[i + 3] = alpha;
     }
   }
@@ -999,9 +999,9 @@ function buildBeamTexture() {
       const filament = 0.82 + 0.18 * Math.sin(x * 0.22 + y * 0.045) * Math.sin(y * 0.019);
       const alpha = Math.min(132, (core + edge) * vertical * filament * 92);
       const i = (y * w + x) * 4;
-      img.data[i] = 225;
-      img.data[i + 1] = 225;
-      img.data[i + 2] = 217;
+      img.data[i] = 214;
+      img.data[i + 1] = 244;
+      img.data[i + 2] = 226;
       img.data[i + 3] = alpha;
     }
   }
@@ -1018,13 +1018,13 @@ const canvas = document.getElementById('three-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x080807, 1);
+renderer.setClearColor(0x0b0907, 1);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x080807);
-scene.fog = new THREE.FogExp2(0x10100e, 0.075);
+scene.background = new THREE.Color(0x0a0907);
+scene.fog = new THREE.FogExp2(0x11100d, 0.075);
 
-const ambient = new THREE.HemisphereLight(0xe2ded3, 0x10100e, 0.3);
+const ambient = new THREE.HemisphereLight(0xd8c8a6, 0x12100d, 0.34);
 scene.add(ambient);
 
 const camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 200);
@@ -1083,7 +1083,7 @@ for (let r = 0; r < ROWS; r++) {
     sprites.push({ sprite: s, mat, ch, pulse: 0, baseScale: 0.18 });
 
     const padMat = new THREE.MeshBasicMaterial({
-      color: ch % 5 === 0 ? 0xb6aa8e : 0xbfc1ba,
+      color: ch % 5 === 0 ? 0xd7b56d : 0x86d9bd,
       transparent: true,
       opacity: 0.045,
       depthWrite: false,
@@ -1111,8 +1111,8 @@ const beamGeo = new THREE.ConeGeometry(BEAM_RADIUS, BEAM_LENGTH, 48, 1, true);
 const beamCoreGeo = new THREE.ConeGeometry(BEAM_RADIUS * 0.38, BEAM_LENGTH * 0.96, 40, 1, true);
 const headGeo = new THREE.BoxGeometry(0.34, 0.08, 0.34);
 const beamTex = buildBeamTexture();
-const chamberTeal = new THREE.Color(0xbfc1ba);
-const chamberGold = new THREE.Color(0xb6aa8e);
+const chamberTeal = new THREE.Color(0x86d9bd);
+const chamberGold = new THREE.Color(0xd7b56d);
 const coneSourceAxis = new THREE.Vector3(0, -1, 0);
 function orientBeamFromWall(mesh, pos, length = BEAM_LENGTH) {
   const source = new THREE.Vector3(pos.x, pos.y, pos.z);
@@ -1198,7 +1198,7 @@ for (let i = 0; i < 7; i++) {
   const z = -4.2 + i * 1.4;
   const mat = new THREE.SpriteMaterial({
     map: beamTex,
-    color: 0xb6b8b0,
+    color: 0x9ccbb6,
     transparent: true,
     opacity: 0,
     depthWrite: false,
@@ -1216,7 +1216,7 @@ const gridSize = TUNNEL_WALL_X * 2 + 2.4;
 const chamberFloor = new THREE.Mesh(
   new THREE.CircleGeometry(gridSize * 0.58, 96),
   new THREE.MeshBasicMaterial({
-    color: 0x4d504a,
+    color: 0x4c725f,
     transparent: true,
     opacity: 0.045,
     depthWrite: false,
@@ -1227,13 +1227,13 @@ chamberFloor.rotation.x = -Math.PI / 2;
 chamberFloor.position.y = -0.025;
 scene.add(chamberFloor);
 
-const grid = new THREE.GridHelper(gridSize, 16, 0x9b9a90, 0x9b9a90);
+const grid = new THREE.GridHelper(gridSize, 16, 0xd8ceb3, 0xd8ceb3);
 grid.material.opacity = 0.075;
 grid.material.transparent = true;
 grid.position.y = -0.02;
 scene.add(grid);
 
-const perspectiveGrid = new THREE.GridHelper(gridSize * 1.45, 28, 0x9a9b94, 0x555650);
+const perspectiveGrid = new THREE.GridHelper(gridSize * 1.45, 28, 0x9fbfae, 0x55685c);
 perspectiveGrid.material.opacity = 0;
 perspectiveGrid.material.transparent = true;
 perspectiveGrid.position.y = -0.018;
@@ -1248,7 +1248,7 @@ const wallYMax = TUNNEL_Y_MIN + (ROWS - 1) * TUNNEL_Y_STEP + 0.58;
 const aisleFloor = new THREE.Mesh(
   new THREE.PlaneGeometry(SPACING * 1.12, floorZMax - floorZMin),
   new THREE.MeshBasicMaterial({
-    color: 0x9fa29a,
+    color: 0x87d8be,
     transparent: true,
     opacity: 0,
     depthWrite: false,
@@ -1261,7 +1261,7 @@ aisleFloor.position.y = 0.012;
 scene.add(aisleFloor);
 
 const wallPlaneMat = new THREE.MeshBasicMaterial({
-  color: 0x74766f,
+  color: 0x6fa691,
   transparent: true,
   opacity: 0.028,
   depthWrite: false,
@@ -1298,7 +1298,7 @@ structureLinePositions.push(floorXMax, wallYMin, floorZMin, floorXMax, wallYMin,
 const structureLineGeo = new THREE.BufferGeometry();
 structureLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(structureLinePositions, 3));
 const structureLineMat = new THREE.LineBasicMaterial({
-  color: 0xb9bab2,
+  color: 0xaad5c2,
   transparent: true,
   opacity: 0,
   depthWrite: false,
@@ -1323,7 +1323,7 @@ for (let ch = 0; ch < N_CH; ch++) {
   const guideGeo = new THREE.BufferGeometry();
   guideGeo.setAttribute('position', new THREE.Float32BufferAttribute(guidePositions, 3));
   const guideMat = new THREE.LineBasicMaterial({
-    color: ch % 5 === 0 ? 0xb6aa8e : 0xbfc1ba,
+    color: ch % 5 === 0 ? 0xd7b56d : 0x86d9bd,
     transparent: true,
     opacity: 0,
     depthWrite: false,
@@ -1362,7 +1362,7 @@ rigLinePositions.push(aisleRight, portalTopY, floorZMin, aisleRight, portalTopY,
 const rigLineGeo = new THREE.BufferGeometry();
 rigLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(rigLinePositions, 3));
 const rigLineMat = new THREE.LineBasicMaterial({
-  color: 0xc3c3ba,
+  color: 0xc7e5d4,
   transparent: true,
   opacity: 0,
   depthWrite: false,
@@ -1413,7 +1413,7 @@ const strandPositions = new Float32Array(STRAND_COUNT * 2 * 3);
 const strandGeo = new THREE.BufferGeometry();
 strandGeo.setAttribute('position', new THREE.BufferAttribute(strandPositions, 3));
 const strandMat = new THREE.LineBasicMaterial({
-  color: 0xb8bab2,
+  color: 0x86d9bd,
   transparent: true,
   opacity: 0.045,
   depthWrite: false,
@@ -1474,7 +1474,7 @@ for (let i = 0; i < TYNDALL_STREAKS; i++) {
 const tyndallGeo = new THREE.BufferGeometry();
 tyndallGeo.setAttribute('position', new THREE.BufferAttribute(tyndallPositions, 3));
 const tyndallMat = new THREE.LineBasicMaterial({
-  color: 0xdedfd8,
+  color: 0xd7f5e8,
   transparent: true,
   opacity: 0,
   depthWrite: false,
@@ -1492,7 +1492,7 @@ for (let i = 0; i < FOG_SHEET_COUNT; i++) {
   const baseZ = -3.5 + seeded(i + 1933) * 7;
   const mat = new THREE.SpriteMaterial({
     map: fogTex,
-    color: seeded(i + 2053) > 0.78 ? 0xb6aa8e : 0xb8bab2,
+    color: seeded(i + 2053) > 0.72 ? 0xd7c58d : 0x9ccbb6,
     transparent: true,
     opacity: 0.08,
     depthTest: false,
@@ -1809,10 +1809,10 @@ function updateChamber(now, dt) {
     agentPositions[i3 + 2] = centerZ + Math.sin(theta * 1.12 + seed.rowBias) * orbit + wander * 0.18 + lane;
 
     const hot = Math.min(1, e * 0.92 + bloom * 0.22 + tyndall * 0.18);
-    const warmMix = Math.max(0, Math.sin(seed.phase + t * 0.31)) * hot * 0.16;
-    agentColors[i3] = 0.32 + hot * 0.42 + warmMix;
-    agentColors[i3 + 1] = 0.32 + hot * 0.4 + warmMix * 0.55;
-    agentColors[i3 + 2] = 0.3 + hot * 0.36;
+    const goldMix = Math.max(0, Math.sin(seed.phase + t * 0.31)) * hot * 0.42;
+    agentColors[i3] = 0.24 + hot * (0.38 + goldMix);
+    agentColors[i3 + 1] = 0.28 + hot * 0.56;
+    agentColors[i3 + 2] = 0.22 + hot * (0.46 - goldMix * 0.2);
   }
   agentGeo.attributes.position.needsUpdate = true;
   agentGeo.attributes.color.needsUpdate = true;
@@ -1840,9 +1840,9 @@ function updateChamber(now, dt) {
     const coneFalloff = Math.pow(0.24 + rise * 0.76, 0.72) * (1 - smoothstep(0.9, 1, rise) * 0.28);
     const mote = (0.08 + e * 0.52 + bloom * 0.1 + tyndall * 0.12) * coneFalloff * mix(0.45, 1.15, tyndall);
     const warm = seed.warmth > 0.82 ? 1 : 0;
-    hazeColors[i3] = mote * (warm ? 1.08 : 0.9);
-    hazeColors[i3 + 1] = mote * (warm ? 1.0 : 0.98);
-    hazeColors[i3 + 2] = mote * (warm ? 0.78 : 0.92);
+    hazeColors[i3] = mote * (warm ? 1.34 : 0.64);
+    hazeColors[i3 + 1] = mote * (warm ? 1.05 : 1.15);
+    hazeColors[i3 + 2] = mote * (warm ? 0.52 : 0.92);
   }
   hazeGeo.attributes.position.needsUpdate = true;
   hazeGeo.attributes.color.needsUpdate = true;
